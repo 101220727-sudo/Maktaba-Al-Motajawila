@@ -517,9 +517,14 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     
                                     {showDropdown && (
                                         <div className="dropdown-menu">
+
+                                            {(isAdminEvents || isAdminNews || !isRegisteredUser) && (
+                           
                                             <Link href={route('profile.edit')} className="dropdown-item">
                                                 الملف الشخصي
                                             </Link>
+
+                                             )}
                                             <Link href={route('logout')} method="post" as="button" className="dropdown-item">
                                                 تسجيل الخروج
                                             </Link>

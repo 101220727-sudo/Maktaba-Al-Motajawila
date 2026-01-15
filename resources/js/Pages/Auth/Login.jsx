@@ -19,8 +19,18 @@ const submit = (e) => {
 
     post(route('login'), {
         onFinish: () => reset('password'),
-        onSuccess: () => {
-            window.location.href = '/';
+        onSuccess: (response) => {
+            // Check if the logged-in user is admin_news
+            const userRole = response.props?.auth?.user?.role?.name;
+            
+            if (userRole === 'admin_news') {
+                window.location.href = '/news';
+            } else if (userRole === 'manager') {
+                window.location.href = '/manager-dashboard';
+            }
+            else {
+                window.location.href = '/';
+            }
         }
     });
 };

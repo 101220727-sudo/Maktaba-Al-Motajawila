@@ -27,10 +27,14 @@ class EventsPackage extends Model
 	public $timestamps = false;
 
 	protected $fillable = [
-		'description',
-		'package_title',
-		'main_image'
-	];
+    'description',
+    'package_title',
+    'main_image',
+    'total_price',
+    'event_time',
+    'activity_id',
+];
+
 
 	public function event_requests()
 	{

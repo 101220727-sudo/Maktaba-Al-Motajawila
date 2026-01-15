@@ -40,10 +40,32 @@ export default function EventRequestPage({ auth, packages, selectedPackageId }) 
 
 
 
+// const handleSubmit = (e) => {
+//     e.preventDefault();
+    
+//     // Store form data in sessionStorage to use in packages page
+//     sessionStorage.setItem('eventRequestData', JSON.stringify({
+//         event_date: form.event_date,
+//         location: form.location,
+//         age: form.age,
+//         nb_of_visitors: form.nb_of_visitors,
+//         gender: form.gender,
+//         phone: form.phone
+//     }));
+    
+//     // Redirect to packages page with filters
+//     router.visit(route('event.packages'), {
+//         data: {
+//             age: form.age,
+//             visitors: form.nb_of_visitors,
+//             gender: form.gender
+//         }
+//     });
+// };
 const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Store form data in sessionStorage to use in packages page
+    // Store form data in sessionStorage to use later when requesting package
     sessionStorage.setItem('eventRequestData', JSON.stringify({
         event_date: form.event_date,
         location: form.location,
@@ -53,11 +75,12 @@ const handleSubmit = (e) => {
         phone: form.phone
     }));
     
-    // Redirect to packages page with filters
+    // Redirect to packages page with filters in URL
     router.visit(route('event.packages'), {
+        method: 'get',
         data: {
             age: form.age,
-            visitors: form.nb_of_visitors,
+            visitors: form.nb_of_visitors,  // Note: 'visitors' not 'nb_of_visitors'
             gender: form.gender
         }
     });
@@ -452,9 +475,13 @@ const handleSubmit = (e) => {
                                     
                                     {showDropdown && (
                                         <div className="dropdown-menu">
+
+                                             {(isAdminEvents || isAdminNews) && (
                                             <Link href={route('profile.edit')} className="dropdown-item">
                                                 الملف الشخصي
                                             </Link>
+
+                                             )}
                                             <Link href={route('logout')} method="post" as="button" className="dropdown-item">
                                                 تسجيل الخروج
                                             </Link>

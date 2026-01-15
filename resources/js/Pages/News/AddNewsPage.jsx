@@ -557,9 +557,13 @@ const AddNewsPage = ({ auth }) => {
                                     
                                     {showDropdown && (
                                         <div className="dropdown-menu">
+
+                                             {(isAdminEvents || isAdminNews) && (
                                             <Link href={route('profile.edit')} className="dropdown-item">
                                                 الملف الشخصي
                                             </Link>
+
+                                             )}
                                             <Link href={route('logout')} method="post" as="button" className="dropdown-item">
                                                 تسجيل الخروج
                                             </Link>

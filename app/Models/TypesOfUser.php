@@ -28,8 +28,12 @@ class TypesOfUser extends Model
 		'name'
 	];
 
-	public function users()
-	{
-		return $this->hasMany(User::class, 'type_id');
-	}
+	// public function users()
+	// {
+	// 	return $this->hasMany(User::class, 'type_id');
+	// }
+	    public function users()
+    {
+        return $this->hasMany(User::class, 'type_id');
+    }
 }
