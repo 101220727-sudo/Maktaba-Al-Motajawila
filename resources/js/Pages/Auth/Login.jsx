@@ -27,6 +27,8 @@ const submit = (e) => {
                 window.location.href = '/news';
             } else if (userRole === 'manager') {
                 window.location.href = '/manager-dashboard';
+            } else if (userRole === 'admin_events') {
+                window.location.href = '/event-packages';
             }
             else {
                 window.location.href = '/';

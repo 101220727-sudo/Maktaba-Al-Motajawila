@@ -476,7 +476,7 @@ const handleSubmit = (e) => {
                                     {showDropdown && (
                                         <div className="dropdown-menu">
 
-                                             {(isAdminEvents || isAdminNews) && (
+                                             {(isAdminEvents || isAdminNews ) && (
                                             <Link href={route('profile.edit')} className="dropdown-item">
                                                 الملف الشخصي
                                             </Link>
@@ -541,7 +541,7 @@ const handleSubmit = (e) => {
         onChange={handleChange}
         value={form.age}
         min="4"
-        max="20"
+        max="18"
         required 
     />
 </div>

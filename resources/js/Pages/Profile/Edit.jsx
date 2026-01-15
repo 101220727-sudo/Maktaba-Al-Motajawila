@@ -105,6 +105,10 @@ export default function Edit({ mustVerifyEmail, status }) {
 >
     طلباتي للفعاليات
 </Link>
+
+       <Link href={route('event.request')} className="my-requests-btn">
+            قدّم طلب زيارة
+        </Link>
 </div>
 
                     <div className="profile-card">

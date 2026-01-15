@@ -113,5 +113,9 @@ return array (
       'min_visitors' => '25',
       'suitable_gender' => 'male',
     ),
+    22 => 
+    array (
+      'suitable_gender' => 'mixed',
+    ),
   ),
 );
