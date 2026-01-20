@@ -48,117 +48,263 @@ export default function DeleteUserForm({ className = '' }) {
     return (
         <section className={`space-y-6 ${className}`}>
             <style>{`
+                :root {
+                    --color-primary: #76499C;
+                    --color-primary-soft: #A189B7;
+                    --color-primary-light: #E8DFF5;
+                    --color-teal: #4ABC9D;
+                    --color-teal-light: #E0F7F2;
+                    --color-red: #c62828;
+                    --color-red-dark: #a01515;
+                    --color-red-light: #ffebee;
+                    --color-bg: #F9F7FB;
+                    --color-text: #222222;
+                    --color-text-light: #555555;
+                    --shadow-sm: 0 2px 8px rgba(198, 40, 40, 0.1);
+                    --shadow-md: 0 8px 24px rgba(198, 40, 40, 0.15);
+                    --shadow-lg: 0 16px 48px rgba(198, 40, 40, 0.2);
+                    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+
                 .delete-section-header {
-                    margin-bottom: 1.5rem;
+                    margin-bottom: 2rem;
+                    animation: fadeInUp 0.6s ease-out;
+                }
+
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
                 }
 
                 .delete-section-title {
-                    font-size: 1.3rem;
-                    font-weight: 700;
-                    color: #76499C;
-                    margin-bottom: 0.5rem;
+                    font-size: 1.8rem;
+                    font-weight: 900;
+                    color: var(--color-red);
+                    margin-bottom: 0.8rem;
+                    position: relative;
+                    display: inline-block;
+                    padding-bottom: 0.5rem;
+                }
+
+                .delete-section-title::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    width: 60%;
+                    height: 4px;
+                    background: linear-gradient(90deg, var(--color-red), transparent);
+                    border-radius: 2px;
+                }
+
+                .delete-section-title::before {
+                    content: '⚠️';
+                    margin-left: 0.7rem;
+                    font-size: 1.7rem;
                 }
 
                 .delete-section-desc {
-                    font-size: 0.95rem;
-                    color: #666;
-                    line-height: 1.6;
+                    font-size: 1.05rem;
+                    color: var(--color-text-light);
+                    line-height: 1.8;
+                    max-width: 700px;
+                    padding: 1.2rem 1.5rem;
+                    background: var(--color-red-light);
+                    border-radius: 12px;
+                    border-right: 3px solid var(--color-red);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.7rem;
+                }
+
+                .delete-section-desc::before {
+                    content: '🛑';
+                    font-size: 1.5rem;
+                    flex-shrink: 0;
                 }
 
                 .btn-delete-account {
-                    background-color: #c62828;
+                    background: linear-gradient(135deg, var(--color-red), var(--color-red-dark));
                     color: white;
-                    padding: 0.7rem 1.5rem;
-                    border-radius: 999px;
+                    padding: 0.9rem 2rem;
+                    border-radius: 50px;
                     border: none;
-                    font-size: 1rem;
-                    font-weight: 600;
+                    font-size: 1.05rem;
+                    font-weight: 700;
                     cursor: pointer;
-                    transition: background-color 0.3s;
-                    margin-top: 1rem;
+                    transition: var(--transition);
+                    margin-top: 1.5rem;
+                    box-shadow: var(--shadow-sm);
+                    position: relative;
+                    overflow: hidden;
+                    letter-spacing: 0.3px;
+                }
+
+                .btn-delete-account::before {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 0;
+                    height: 0;
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%);
+                    transition: width 0.6s ease, height 0.6s ease;
+                }
+
+                .btn-delete-account:hover::before {
+                    width: 400px;
+                    height: 400px;
                 }
 
                 .btn-delete-account:hover {
-                    background-color: #a01515;
+                    transform: translateY(-3px);
+                    box-shadow: var(--shadow-md);
                 }
 
                 .modal-header-delete {
-                    font-size: 1.3rem;
-                    font-weight: 700;
-                    color: #76499C;
-                    margin-bottom: 0.5rem;
+                    font-size: 1.6rem;
+                    font-weight: 900;
+                    color: var(--color-red);
+                    margin-bottom: 1rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.7rem;
+                }
+
+                .modal-header-delete::before {
+                    content: '⚠️';
+                    font-size: 1.8rem;
                 }
 
                 .modal-desc-delete {
-                    font-size: 0.95rem;
-                    color: #666;
-                    line-height: 1.6;
-                    margin-top: 0.5rem;
+                    font-size: 1.05rem;
+                    color: var(--color-text-light);
+                    line-height: 1.8;
+                    margin-top: 1rem;
+                    padding: 1.2rem;
+                    background: var(--color-red-light);
+                    border-radius: 12px;
+                    border-right: 3px solid var(--color-red);
                 }
 
                 .modal-form-group {
-                    margin-top: 1.5rem;
+                    margin-top: 2rem;
                 }
 
                 .modal-input-delete {
-                    padding: 0.75rem 1rem;
-                    border: 2px solid #e0e0e0;
-                    border-radius: 0.7rem;
+                    padding: 0.9rem 1.2rem;
+                    border: 2px solid rgba(198, 40, 40, 0.3);
+                    border-radius: 12px;
                     font-size: 1rem;
-                    transition: border-color 0.3s;
+                    background: linear-gradient(135deg, #fff8f8 0%, #fff 100%);
+                    transition: var(--transition);
                     font-family: inherit;
-                    width: 75%;
-                    margin-top: 0.5rem;
+                    width: 100%;
+                    margin-top: 0.8rem;
                 }
 
                 .modal-input-delete:focus {
                     outline: none;
-                    border-color: #4ABC9D;
+                    border-color: var(--color-red);
+                    box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.12);
+                    background: white;
+                    transform: translateY(-2px);
+                }
+
+                .modal-input-delete::placeholder {
+                    color: #aaa;
                 }
 
                 .modal-actions-delete {
                     display: flex;
                     justify-content: flex-end;
-                    gap: 0.75rem;
-                    margin-top: 1.5rem;
+                    gap: 1rem;
+                    margin-top: 2rem;
                 }
 
                 .btn-cancel-delete {
-                    background-color: #f0f0f0;
-                    color: #333;
-                    padding: 0.7rem 1.5rem;
-                    border-radius: 999px;
+                    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+                    color: var(--color-text);
+                    padding: 0.8rem 1.8rem;
+                    border-radius: 50px;
                     border: none;
                     font-size: 1rem;
-                    font-weight: 600;
+                    font-weight: 700;
                     cursor: pointer;
-                    transition: background-color 0.3s;
+                    transition: var(--transition);
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
                 }
 
                 .btn-cancel-delete:hover {
-                    background-color: #e0e0e0;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
                 }
 
                 .btn-confirm-delete {
-                    background-color: #c62828;
+                    background: linear-gradient(135deg, var(--color-red), var(--color-red-dark));
                     color: white;
-                    padding: 0.7rem 1.5rem;
-                    border-radius: 999px;
+                    padding: 0.8rem 1.8rem;
+                    border-radius: 50px;
                     border: none;
                     font-size: 1rem;
-                    font-weight: 600;
+                    font-weight: 700;
                     cursor: pointer;
-                    transition: background-color 0.3s;
-                    margin-right: 0.75rem;
+                    transition: var(--transition);
+                    box-shadow: var(--shadow-sm);
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .btn-confirm-delete::before {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 0;
+                    height: 0;
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%);
+                    transition: width 0.6s ease, height 0.6s ease;
+                }
+
+                .btn-confirm-delete:hover::before {
+                    width: 400px;
+                    height: 400px;
                 }
 
                 .btn-confirm-delete:hover:not(:disabled) {
-                    background-color: #a01515;
+                    transform: translateY(-3px);
+                    box-shadow: var(--shadow-md);
                 }
 
                 .btn-confirm-delete:disabled {
                     opacity: 0.6;
                     cursor: not-allowed;
+                    transform: none;
+                }
+
+                .error-message-delete {
+                    color: var(--color-red);
+                    font-size: 0.88rem;
+                    margin-top: 0.5rem;
+                    font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.4rem;
+                }
+
+                .error-message-delete::before {
+                    content: '⚠️';
+                    font-size: 0.9rem;
                 }
 
                 .sr-only-delete {
@@ -170,6 +316,56 @@ export default function DeleteUserForm({ className = '' }) {
                     overflow: hidden;
                     clip: rect(0,0,0,0);
                     border: 0;
+                }
+
+                @media (max-width: 768px) {
+                    .delete-section-title {
+                        font-size: 1.5rem;
+                    }
+
+                    .delete-section-desc {
+                        font-size: 0.95rem;
+                        padding: 1rem 1.2rem;
+                    }
+
+                    .modal-header-delete {
+                        font-size: 1.3rem;
+                    }
+
+                    .modal-actions-delete {
+                        flex-direction: column-reverse;
+                    }
+
+                    .btn-cancel-delete,
+                    .btn-confirm-delete {
+                        width: 100%;
+                        text-align: center;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .delete-section-title {
+                        font-size: 1.3rem;
+                    }
+
+                    .modal-header-delete {
+                        font-size: 1.2rem;
+                    }
+
+                    .btn-delete-account {
+                        padding: 0.8rem 1.5rem;
+                        font-size: 0.95rem;
+                    }
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    *,
+                    *::before,
+                    *::after {
+                        animation-duration: 0.01ms !important;
+                        animation-iteration-count: 1 !important;
+                        transition-duration: 0.01ms !important;
+                    }
                 }
             `}</style>
 
@@ -220,7 +416,7 @@ export default function DeleteUserForm({ className = '' }) {
 
                         <InputError
                             message={errors.password}
-                            className="mt-2"
+                            className="error-message-delete"
                         />
                     </div>
 
@@ -230,7 +426,7 @@ export default function DeleteUserForm({ className = '' }) {
                         </SecondaryButton>
 
                         <DangerButton className="btn-confirm-delete" disabled={processing}>
-                            حذف الحساب
+                            {processing ? 'جارٍ الحذف...' : 'حذف الحساب'}
                         </DangerButton>
                     </div>
                 </form>

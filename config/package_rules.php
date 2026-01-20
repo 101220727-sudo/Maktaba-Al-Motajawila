@@ -5,10 +5,10 @@ return array (
   array (
     1 => 
     array (
-      'min_age' => 12,
-      'max_age' => 20,
-      'min_visitors' => 5,
-      'max_visitors' => 30,
+      'min_age' => '4',
+      'max_age' => '7',
+      'min_visitors' => '5',
+      'max_visitors' => '30',
       'suitable_gender' => 'mixed',
     ),
     3 => 

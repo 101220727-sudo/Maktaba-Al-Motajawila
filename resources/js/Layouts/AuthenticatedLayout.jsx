@@ -1,4 +1,3 @@
-
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
@@ -17,8 +16,18 @@ export default function AuthenticatedLayout({ header, children }) {
             <style>{`
                 :root {
                     --color-primary: #76499C;
+                    --color-primary-soft: #A189B7;
+                    --color-primary-light: #E8DFF5;
                     --color-teal: #4ABC9D;
+                    --color-teal-light: #E0F7F2;
+                    --color-yellow: #F2C94C;
                     --color-bg: #F9F7FB;
+                    --color-text: #222222;
+                    --color-text-light: #555555;
+                    --shadow-sm: 0 2px 8px rgba(118, 73, 156, 0.08);
+                    --shadow-md: 0 8px 24px rgba(118, 73, 156, 0.12);
+                    --shadow-lg: 0 16px 48px rgba(118, 73, 156, 0.18);
+                    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
                 * {
@@ -27,25 +36,74 @@ export default function AuthenticatedLayout({ header, children }) {
 
                 .authenticated-layout {
                     min-height: 100vh;
-                    background-color: var(--color-bg);
-                    font-family: "Tajawal", "Cairo", system-ui, sans-serif;
+                    background: linear-gradient(135deg, #F9F7FB 0%, #FFF 100%);
+                    font-family: "Tajawal", "Cairo", "Segoe UI", system-ui, sans-serif;
+                    display: flex;
+                    flex-direction: column;
+                    position: relative;
+                }
+
+                .authenticated-layout::before {
+                    content: '';
+                    position: fixed;
+                    top: -50%;
+                    right: -20%;
+                    width: 800px;
+                    height: 800px;
+                    background: radial-gradient(circle, rgba(118, 73, 156, 0.05) 0%, transparent 70%);
+                    border-radius: 50%;
+                    z-index: 0;
+                    animation: float 20s ease-in-out infinite;
+                }
+
+                @keyframes float {
+                    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+                    33% { transform: translate(30px, -30px) rotate(5deg); }
+                    66% { transform: translate(-20px, 20px) rotate(-5deg); }
                 }
 
                 .auth-nav {
-                    background-color: #ffffff;
-                    border-bottom: 2px solid rgba(118, 73, 156, 0.15);
-                    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                    background: rgba(255, 255, 255, 0.98);
+                    backdrop-filter: blur(10px);
+                    border-bottom: 1px solid rgba(118, 73, 156, 0.1);
+                    box-shadow: var(--shadow-sm);
+                    position: sticky;
+                    top: 0;
+                    z-index: 100;
+                    transition: var(--transition);
+                }
+
+                .auth-nav::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, 
+                        transparent 0%, 
+                        var(--color-teal) 25%, 
+                        var(--color-primary) 50%, 
+                        var(--color-teal) 75%, 
+                        transparent 100%
+                    );
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                }
+
+                .auth-nav:hover::after {
+                    opacity: 1;
                 }
 
                 .auth-nav-container {
                     margin: 0 auto;
-                    max-width: 1100px;
+                    max-width: 1200px;
                     padding: 0 1.5rem;
                 }
 
                 .auth-nav-inner {
                     display: flex;
-                    height: 4rem;
+                    height: 5rem;
                     justify-content: space-between;
                     align-items: center;
                 }
@@ -59,12 +117,18 @@ export default function AuthenticatedLayout({ header, children }) {
                 .auth-logo-link {
                     display: flex;
                     align-items: center;
+                    transition: var(--transition);
+                }
+
+                .auth-logo-link:hover {
+                    transform: scale(1.05);
                 }
 
                 .auth-logo {
-                    height: 2.5rem;
+                    height: 3rem;
                     width: auto;
                     color: var(--color-primary);
+                    filter: drop-shadow(0 4px 12px rgba(118, 73, 156, 0.2));
                 }
 
                 .auth-nav-links {
@@ -81,20 +145,41 @@ export default function AuthenticatedLayout({ header, children }) {
 
                 .auth-nav-link {
                     text-decoration: none;
-                    color: #333;
+                    color: var(--color-text);
                     font-size: 1.1rem;
                     font-weight: 600;
-                    transition: color 0.3s;
+                    transition: var(--transition);
                     padding: 0.5rem 0;
+                    position: relative;
+                }
+
+                .auth-nav-link::before {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    width: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, var(--color-teal), var(--color-primary));
+                    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                    border-radius: 2px;
                 }
 
                 .auth-nav-link:hover {
                     color: var(--color-primary);
+                    transform: translateY(-2px);
+                }
+
+                .auth-nav-link:hover::before {
+                    width: 100%;
                 }
 
                 .auth-nav-link.active {
                     color: var(--color-primary);
-                    border-bottom: 3px solid var(--color-teal);
+                }
+
+                .auth-nav-link.active::before {
+                    width: 100%;
                 }
 
                 .auth-nav-left {
@@ -115,35 +200,62 @@ export default function AuthenticatedLayout({ header, children }) {
                 .auth-dropdown-trigger {
                     display: inline-flex;
                     align-items: center;
-                    padding: 0.5rem 1rem;
-                    border-radius: 999px;
-                    background-color: var(--color-primary);
+                    gap: 0.6rem;
+                    padding: 0.65rem 1.4rem;
+                    border-radius: 50px;
+                    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-soft) 100%);
                     color: white;
                     font-size: 1rem;
                     font-weight: 600;
                     border: none;
                     cursor: pointer;
-                    transition: opacity 0.3s;
+                    box-shadow: 0 4px 15px rgba(118, 73, 156, 0.3);
+                    transition: var(--transition);
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .auth-dropdown-trigger::before {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 0;
+                    height: 0;
+                    background: rgba(255, 255, 255, 0.2);
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%);
+                    transition: width 0.6s ease, height 0.6s ease;
+                }
+
+                .auth-dropdown-trigger:hover::before {
+                    width: 300px;
+                    height: 300px;
                 }
 
                 .auth-dropdown-trigger:hover {
-                    opacity: 0.9;
+                    transform: translateY(-3px);
+                    box-shadow: 0 8px 25px rgba(118, 73, 156, 0.4);
                 }
 
                 .auth-dropdown-icon {
-                    margin-right: 0.5rem;
-                    height: 1rem;
-                    width: 1rem;
+                    height: 1.1rem;
+                    width: 1.1rem;
+                    transition: transform 0.3s ease;
+                }
+
+                .auth-dropdown-trigger:hover .auth-dropdown-icon {
+                    transform: rotate(180deg);
                 }
 
                 .auth-mobile-menu-button {
                     display: inline-flex;
                     align-items: center;
                     justify-content: center;
-                    padding: 0.5rem;
-                    border-radius: 0.5rem;
-                    color: #666;
-                    transition: all 0.3s;
+                    padding: 0.7rem;
+                    border-radius: 12px;
+                    color: var(--color-text-light);
+                    transition: var(--transition);
                     border: none;
                     background: none;
                     cursor: pointer;
@@ -156,21 +268,35 @@ export default function AuthenticatedLayout({ header, children }) {
                 }
 
                 .auth-mobile-menu-button:hover {
-                    background-color: rgba(118, 73, 156, 0.08);
+                    background: linear-gradient(135deg, rgba(118, 73, 156, 0.08) 0%, rgba(74, 188, 157, 0.05) 100%);
                     color: var(--color-primary);
                 }
 
                 .auth-mobile-menu-icon {
-                    height: 1.5rem;
-                    width: 1.5rem;
+                    height: 1.8rem;
+                    width: 1.8rem;
                 }
 
                 .auth-mobile-dropdown {
                     display: none;
+                    background: white;
+                    border-top: 1px solid rgba(118, 73, 156, 0.1);
                 }
 
                 .auth-mobile-dropdown.show {
                     display: block;
+                    animation: slideDown 0.3s ease-out;
+                }
+
+                @keyframes slideDown {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
                 }
 
                 @media (min-width: 640px) {
@@ -180,83 +306,133 @@ export default function AuthenticatedLayout({ header, children }) {
                 }
 
                 .auth-mobile-nav-links {
-                    padding: 0.75rem 0;
+                    padding: 1rem 0;
                     display: flex;
                     flex-direction: column;
-                    gap: 0.25rem;
+                    gap: 0.3rem;
                 }
 
                 .auth-mobile-nav-link {
                     display: block;
-                    padding: 0.75rem 1rem;
+                    padding: 0.9rem 1.5rem;
                     text-decoration: none;
-                    color: #333;
-                    font-size: 1rem;
+                    color: var(--color-text);
+                    font-size: 1.05rem;
                     font-weight: 600;
-                    transition: background-color 0.2s;
+                    transition: var(--transition);
                     border-right: 3px solid transparent;
                 }
 
                 .auth-mobile-nav-link:hover,
                 .auth-mobile-nav-link.active {
-                    background-color: rgba(118, 73, 156, 0.08);
+                    background: linear-gradient(90deg, rgba(118, 73, 156, 0.08) 0%, transparent 100%);
                     border-right-color: var(--color-teal);
+                    padding-right: 1.8rem;
                 }
 
                 .auth-mobile-user-section {
-                    border-top: 1px solid #e5e7eb;
-                    padding: 1rem 0;
+                    border-top: 2px solid rgba(118, 73, 156, 0.1);
+                    padding: 1.2rem 0;
                     margin-top: 0.5rem;
+                    background: var(--color-primary-light);
                 }
 
                 .auth-mobile-user-info {
-                    padding: 0 1rem;
-                    margin-bottom: 0.75rem;
+                    padding: 0 1.5rem;
+                    margin-bottom: 1rem;
                 }
 
                 .auth-mobile-user-name {
-                    font-size: 1rem;
-                    font-weight: 600;
+                    font-size: 1.1rem;
+                    font-weight: 700;
                     color: var(--color-primary);
                 }
 
                 .auth-mobile-user-email {
-                    font-size: 0.9rem;
-                    color: #666;
-                    margin-top: 0.25rem;
+                    font-size: 0.95rem;
+                    color: var(--color-text-light);
+                    margin-top: 0.3rem;
                 }
 
                 .auth-mobile-user-links {
                     display: flex;
                     flex-direction: column;
-                    gap: 0.25rem;
+                    gap: 0.3rem;
                 }
 
                 .auth-header {
-                    background-color: white;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                    background: white;
+                    box-shadow: var(--shadow-sm);
+                    position: relative;
+                    z-index: 1;
                 }
 
                 .auth-header-inner {
                     margin: 0 auto;
-                    max-width: 1100px;
-                    padding: 1.5rem;
+                    max-width: 1200px;
+                    padding: 2rem 1.5rem;
                 }
 
                 .auth-main {
+                    flex: 1;
                     padding: 0;
+                    position: relative;
+                    z-index: 1;
                 }
 
                 .auth-footer {
-                    background-color: #3a0d63;
+                    background: linear-gradient(135deg, #2a0845 0%, #3a0d63 100%);
                     color: #f3e9ff;
-                    padding: 1.5rem;
+                    padding: 2rem 1.5rem;
                     margin-top: 2rem;
                     text-align: center;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .auth-footer::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, 
+                        var(--color-teal), 
+                        var(--color-primary), 
+                        var(--color-yellow),
+                        var(--color-primary),
+                        var(--color-teal)
+                    );
                 }
 
                 .auth-footer-text {
-                    font-size: 0.95rem;
+                    font-size: 0.98rem;
+                    font-weight: 500;
+                }
+
+                @media (max-width: 768px) {
+                    .auth-nav-inner {
+                        height: 4rem;
+                    }
+
+                    .auth-header-inner {
+                        padding: 1.5rem 1rem;
+                    }
+
+                    .auth-footer {
+                        padding: 1.5rem 1rem;
+                    }
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    *,
+                    *::before,
+                    *::after {
+                        animation-duration: 0.01ms !important;
+                        animation-iteration-count: 1 !important;
+                        transition-duration: 0.01ms !important;
+                    }
                 }
             `}</style>
 
@@ -264,9 +440,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div className="auth-nav-container">
                     <div className="auth-nav-inner">
                         <div className="auth-nav-right">
-                 
-
-                  
+                            {/* Logo or navigation links can go here */}
                         </div>
 
                         <div className="auth-nav-left">
@@ -357,16 +531,6 @@ export default function AuthenticatedLayout({ header, children }) {
                 </div>
 
                 <div className={`auth-mobile-dropdown ${showingNavigationDropdown ? 'show' : ''}`}>
-                    <div className="auth-mobile-nav-links">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                            className="auth-mobile-nav-link"
-                        >
-                            لوحة التحكم
-                        </ResponsiveNavLink>
-                    </div>
-
                     <div className="auth-mobile-user-section">
                         <div className="auth-mobile-user-info">
                             <div className="auth-mobile-user-name">

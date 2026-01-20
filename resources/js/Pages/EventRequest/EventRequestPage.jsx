@@ -22,46 +22,6 @@ export default function EventRequestPage({ auth, packages, selectedPackageId }) 
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-
-//try
-//     const handleSubmit = (e) => {
-//     e.preventDefault();
-    
-//     // Redirect to packages page with filters
-//     router.visit(route('event.packages'), {
-//         data: {
-//             age: form.age,
-//             visitors: form.nb_of_visitors
-//             //zed gender
-//         }
-//     });
-// };
-
-
-
-
-// const handleSubmit = (e) => {
-//     e.preventDefault();
-    
-//     // Store form data in sessionStorage to use in packages page
-//     sessionStorage.setItem('eventRequestData', JSON.stringify({
-//         event_date: form.event_date,
-//         location: form.location,
-//         age: form.age,
-//         nb_of_visitors: form.nb_of_visitors,
-//         gender: form.gender,
-//         phone: form.phone
-//     }));
-    
-//     // Redirect to packages page with filters
-//     router.visit(route('event.packages'), {
-//         data: {
-//             age: form.age,
-//             visitors: form.nb_of_visitors,
-//             gender: form.gender
-//         }
-//     });
-// };
 const handleSubmit = (e) => {
     e.preventDefault();
     
@@ -86,30 +46,6 @@ const handleSubmit = (e) => {
     });
 };
 
-//hay drore
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     axios.post('/event-requests', form)
-    //         .then(res => {
-    //             alert(res.data.message);
-    //             // Reset form
-    //             setForm({
-    //                 event_package_id: '',
-    //                 event_date: '',
-    //                 location: '',
-    //                 age: '',
-    //                 nb_of_visitors: '',
-    //                 phone: user?.phone || '', // Keep user's phone after reset
-    //             });
-    //         })
-    //         .catch(err => {
-    //             if (err.response) {
-    //                 alert('فشل الإرسال: ' + JSON.stringify(err.response.data.errors));
-    //             } else {
-    //                 alert('فشل في تقديم الطلب');
-    //             }
-    //         });
-    // };
 
     return (
         <>
