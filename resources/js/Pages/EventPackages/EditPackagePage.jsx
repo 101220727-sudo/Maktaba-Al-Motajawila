@@ -5,7 +5,7 @@ export default function EditPackagePage({ package: pkg, activities }) {
     const { data, setData, put, processing, errors } = useForm({
         package_title: pkg.package_title || '',
         description: pkg.description || '',
-        main_image: pkg.main_image || '',
+       // main_image: pkg.main_image || '',
         total_price: pkg.total_price || '',
         event_time: pkg.event_time || '',
         activity_ids: pkg.activity_ids || [], // ✅ ARRAY
@@ -13,9 +13,7 @@ export default function EditPackagePage({ package: pkg, activities }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-            put(route('packages.update', pkg.id), {
-        forceFormData: true, // Important for file uploads
-    });
+        put(route('packages.update', pkg.id));
     };
 
     return (
@@ -457,80 +455,49 @@ export default function EditPackagePage({ package: pkg, activities }) {
 
 
 
-
-
-
+                          {/* Main Image */}
                         <div className="form-group">
-    <label htmlFor="main_image">الصورة الرئيسية</label>
-    
-    {/* ✅ Show current image if exists */}
-    {pkg.main_image && !data.main_image && (
-        <div style={{
-            marginBottom: '1rem',
-            padding: '1rem',
-            backgroundColor: '#f0f0f0',
-            borderRadius: '12px',
-            textAlign: 'center'
-        }}>
-            <p style={{
-                fontSize: '0.85rem',
-                color: '#666',
-                marginBottom: '0.5rem',
-                fontWeight: '600'
-            }}>الصورة الحالية:</p>
-            <img 
-                src={`/storage/${pkg.main_image}`} 
-                alt="Current" 
-                style={{
-                    maxWidth: '100%',
-                    maxHeight: '200px',
-                    borderRadius: '8px'
-                }}
-            />
-        </div>
-    )}
-    
-    <input
-        id="main_image"
-        type="file"
-        accept="image/*"
-        onChange={e => setData('main_image', e.target.files[0])}
-    />
-    <p style={{fontSize: '0.85rem', color: '#666', marginTop: '0.3rem'}}>
-        اترك الحقل فارغًا للاحتفاظ بالصورة الحالية
-    </p>
-    {errors.main_image && (
-        <div className="error-message">{errors.main_image}</div>
-    )}
-    
-    {/* ✅ New Image Preview */}
-    {data.main_image && (
-        <div style={{
-            marginTop: '1rem',
-            padding: '1rem',
-            backgroundColor: '#e8f5e9',
-            borderRadius: '12px',
-            textAlign: 'center'
-        }}>
-            <p style={{
-                fontSize: '0.9rem',
-                color: 'var(--color-primary)',
-                marginBottom: '0.5rem',
-                fontWeight: '600'
-            }}>معاينة الصورة الجديدة:</p>
-            <img 
-                src={URL.createObjectURL(data.main_image)} 
-                alt="New Preview" 
-                style={{
-                    maxWidth: '100%',
-                    maxHeight: '300px',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
-                }}
-            />
-        </div>
-    )}
-</div>
+                            <label htmlFor="main_image">الصورة الرئيسية</label>
+                            
+                            {pkg.main_image && pkg.main_image !== '' && (
+                                <div style={{marginBottom: '1rem', textAlign: 'center'}}>
+                                    <p style={{fontSize: '0.85rem', color: '#666', marginBottom: '0.5rem'}}>
+                                        الصورة الحالية:
+                                    </p>
+                                    <img 
+                                        src={`/storage/${pkg.main_image}`} 
+                                        alt="Current" 
+                                        style={{maxWidth: '200px', borderRadius: '8px'}}
+                                        onError={(e) => e.target.style.display = 'none'}
+                                    />
+                                </div>
+                            )}
+                            
+                            <input
+                                id="main_image"
+                                type="file"
+                                accept="image/*"
+                                onChange={e => setData('main_image', e.target.files[0] || null)}
+                            />
+                            <p style={{fontSize: '0.85rem', color: '#666', marginTop: '0.3rem'}}>
+                                اترك الحقل فارغًا للاحتفاظ بالصورة الحالية
+                            </p>
+                            
+                            {errors.main_image && (
+                                <div className="error-message">{errors.main_image}</div>
+                            )}
+                        </div>
+
+
+
+
+
+
+
+
+
+
+                        
 
                         <div className="grid-2">
                             {/* Total Price */}

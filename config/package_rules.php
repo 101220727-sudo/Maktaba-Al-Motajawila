@@ -11,11 +11,7 @@ return array (
     ),
     3 => 
     array (
-      'min_age' => 4,
-      'max_age' => 12,
-      'min_visitors' => 2,
-      'max_visitors' => 50,
-      'suitable_gender' => 'female',
+      'suitable_gender' => 'mixed',
     ),
     5 => 
     array (
@@ -119,6 +115,11 @@ return array (
     array (
       'min_age' => '4',
       'max_age' => '10',
+      'suitable_gender' => 'mixed',
+    ),
+    4 => 
+    array (
+      'min_age' => '4',
       'suitable_gender' => 'mixed',
     ),
   ),

@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage; // ✅ ADD THIS LINE
+use Illuminate\Support\Facades\Auth;  // ✅ ADD THIS LINE
+
 
 class EventPackageController extends Controller
 {
@@ -183,47 +186,119 @@ public function index(Request $request)
         return redirect()->route('event.packages')->with('success', 'Package added successfully!');
     }
 
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'package_title' => 'required|string|max:255',
-            'description'   => 'nullable|string',
-            'main_image'    => 'nullable|image|max:2048', // ✅ CHANGED: image file
-            'total_price'   => 'required|numeric',
-            'event_time'    => 'required',
-            'activity_ids'  => 'required|array',
-            'activity_ids.*'=> 'exists:activities,id',
-        ]);
+    // public function update(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'package_title' => 'required|string|max:255',
+    //         'description'   => 'nullable|string',
+    //         'main_image'    => 'nullable|image|max:2048', // ✅ CHANGED: image file
+    //         'total_price'   => 'required|numeric',
+    //         'event_time'    => 'required',
+    //         'activity_ids'  => 'required|array',
+    //         'activity_ids.*'=> 'exists:activities,id',
+    //     ]);
 
-        DB::transaction(function () use ($request, $id) {
-            // Get current package to check for old image
-            $currentPackage = DB::table('events_package')->where('id', $id)->first();
+    //     DB::transaction(function () use ($request, $id) {
+    //         // Get current package to check for old image
+    //         $currentPackage = DB::table('events_package')->where('id', $id)->first();
 
-            // ✅ Handle image upload
-            $imagePath = $currentPackage->main_image; // Keep old image by default
+    //         // ✅ Handle image upload
+    //         $imagePath = $currentPackage->main_image; // Keep old image by default
             
-            if ($request->hasFile('main_image')) {
-                // Delete old image if exists
-                if ($currentPackage->main_image) {
-                    Storage::disk('public')->delete($currentPackage->main_image);
-                }
+    //         if ($request->hasFile('main_image')) {
+    //             // Delete old image if exists
+    //             if ($currentPackage->main_image) {
+    //                 Storage::disk('public')->delete($currentPackage->main_image);
+    //             }
                 
-                // Store new image
-                $imagePath = $request->file('main_image')->store('packages', 'public');
+    //             // Store new image
+    //             $imagePath = $request->file('main_image')->store('packages', 'public');
+    //         }
+
+    //         // Update package
+    //         DB::table('events_package')
+    //             ->where('id', $id)
+    //             ->update([
+    //                 'package_title' => $request->package_title,
+    //                 'description'   => $request->description,
+    //                 'main_image'    => $imagePath, // ✅ Update with new or keep old
+    //                 'total_price'   => $request->total_price,
+    //                 'event_time'    => $request->event_time,
+    //             ]);
+
+    //         // Reset activities
+    //         DB::table('event_package_activity')
+    //             ->where('package_id', $id)
+    //             ->delete();
+
+    //         // Insert new activities
+    //         foreach ($request->activity_ids as $activityId) {
+    //             DB::table('event_package_activity')->insert([
+    //                 'package_id'  => $id,
+    //                 'activity_id' => $activityId,
+    //             ]);
+    //         }
+    //     });
+
+    //     return redirect()
+    //         ->route('event.packages')
+    //         ->with('success', 'Package updated successfully!');
+    // }
+
+
+
+    public function update(Request $request, $id)
+{
+    // Get current package first
+    $currentPackage = DB::table('events_package')->where('id', $id)->first();
+    
+    if (!$currentPackage) {
+        return redirect()->route('event.packages')->with('error', 'Package not found!');
+    }
+
+    // ✅ Validate - fields are required only if they're being changed
+    $request->validate([
+        'package_title' => 'nullable|string|max:255',
+        'description'   => 'nullable|string',
+        'main_image'    => 'nullable|image|max:2048',
+        'total_price'   => 'nullable|numeric',
+        'event_time'    => 'nullable',
+        'activity_ids'  => 'nullable|array',
+        'activity_ids.*'=> 'exists:activities,id',
+    ]);
+
+    DB::transaction(function () use ($request, $id, $currentPackage) {
+        
+        // ✅ Prepare update data - keep old values if new ones aren't provided
+        $updateData = [
+            'package_title' => $request->input('package_title', $currentPackage->package_title),
+            'description'   => $request->input('description', $currentPackage->description),
+            'total_price'   => $request->input('total_price', $currentPackage->total_price),
+            'event_time'    => $request->input('event_time', $currentPackage->event_time),
+        ];
+
+        // Handle image upload
+        if ($request->hasFile('main_image')) {
+            // Delete old image if exists
+            if ($currentPackage->main_image) {
+                Storage::disk('public')->delete($currentPackage->main_image);
             }
+            
+            // Store new image
+            $updateData['main_image'] = $request->file('main_image')->store('packages', 'public');
+        } else {
+            // Keep old image
+            $updateData['main_image'] = $currentPackage->main_image;
+        }
 
-            // Update package
-            DB::table('events_package')
-                ->where('id', $id)
-                ->update([
-                    'package_title' => $request->package_title,
-                    'description'   => $request->description,
-                    'main_image'    => $imagePath, // ✅ Update with new or keep old
-                    'total_price'   => $request->total_price,
-                    'event_time'    => $request->event_time,
-                ]);
+        // Update package
+        DB::table('events_package')
+            ->where('id', $id)
+            ->update($updateData);
 
-            // Reset activities
+        // Update activities if provided
+        if ($request->has('activity_ids') && is_array($request->activity_ids)) {
+            // Delete old activities
             DB::table('event_package_activity')
                 ->where('package_id', $id)
                 ->delete();
@@ -235,38 +310,94 @@ public function index(Request $request)
                     'activity_id' => $activityId,
                 ]);
             }
-        });
+        }
+    });
 
-        return redirect()
-            ->route('event.packages')
-            ->with('success', 'Package updated successfully!');
-    }
+    return redirect()
+        ->route('event.packages')
+        ->with('success', 'Package updated successfully!');
+}
+
+
+
+
+
+
+
+    // public function destroy($id)
+    // {
+    //     // ✅ Get package first to delete image
+    //     $package = DB::table('events_package')->where('id', $id)->first();
+        
+    //     if ($package && $package->main_image) {
+    //         Storage::disk('public')->delete($package->main_image);
+    //     }
+        
+    //     $deleted = DB::table('events_package')->where('id', $id)->delete();
+
+    //     if ($deleted) {
+    //         return redirect()->route('event.packages')->with('success', 'Package deleted successfully!');
+    //     }
+
+    //     return redirect()->route('event.packages')->with('error', 'Package not found!');
+    // }
+
 
     public function destroy($id)
-    {
-        // ✅ Get package first to delete image
-        $package = DB::table('events_package')->where('id', $id)->first();
-        
-        if ($package && $package->main_image) {
-            Storage::disk('public')->delete($package->main_image);
-        }
-        
-        $deleted = DB::table('events_package')->where('id', $id)->delete();
-
-        if ($deleted) {
-            return redirect()->route('event.packages')->with('success', 'Package deleted successfully!');
-        }
-
+{
+    // Get package first
+    $package = DB::table('events_package')->where('id', $id)->first();
+    
+    if (!$package) {
         return redirect()->route('event.packages')->with('error', 'Package not found!');
     }
-
-
-
-
-
-
-
     
+    // ✅ STEP 1: Delete related event requests first
+    DB::table('event_requests')->where('event_package_id', $id)->delete();
+    
+    // ✅ STEP 2: Delete related activities
+    DB::table('event_package_activity')->where('package_id', $id)->delete();
+    
+    // ✅ STEP 3: Delete the image if it exists
+    if ($package->main_image) {
+        Storage::disk('public')->delete($package->main_image);
+    }
+    
+    // ✅ STEP 4: Delete the package
+    DB::table('events_package')->where('id', $id)->delete();
+
+    return redirect()->route('event.packages')->with('success', 'Package deleted successfully!');
+}
+//     public function destroy($id)
+// {
+//     // Get package first
+//     $package = DB::table('events_package')->where('id', $id)->first();
+    
+//     if (!$package) {
+//         return redirect()->route('event.packages')->with('error', 'Package not found!');
+//     }
+    
+//     // ✅ STEP 1: Delete related activities first (foreign key constraint)
+//     DB::table('event_package_activity')->where('package_id', $id)->delete();
+    
+//     // ✅ STEP 2: Delete the image if it exists
+//     if ($package->main_image) {
+//         Storage::disk('public')->delete($package->main_image);
+//     }
+    
+//     // ✅ STEP 3: Delete the package
+//     DB::table('events_package')->where('id', $id)->delete();
+
+//     return redirect()->route('event.packages')->with('success', 'Package deleted successfully!');
+// }
+
+
+
+
+
+
+
+
 
 
 
@@ -440,34 +571,62 @@ private function updatePackageRules($packageId, $rules)
 
 //kenet sa7 li fu2 abl multiple act
 
-
 public function edit($id)
-    {
-        $package = DB::table('events_package')
-            ->where('id', $id)
-            ->first();
+{
+    // Get the package
+    $package = DB::table('events_package')->where('id', $id)->first();
 
-        if (!$package) {
-            abort(404);
-        }
-
-        // Get selected activities for this package
-        $activityIds = DB::table('event_package_activity')
-            ->where('package_id', $id)
-            ->pluck('activity_id')
-            ->toArray();
-
-        // Attach activity_ids directly to package (IMPORTANT)
-        $package->activity_ids = $activityIds;
-
-        // Get all activities
-        $activities = DB::table('activities')->get();
-
-        return Inertia::render('EventPackages/EditPackagePage', [
-            'package' => $package,
-            'activities' => $activities,
-        ]);
+    if (!$package) {
+        return redirect()->route('event.packages')->with('error', 'Package not found!');
     }
+
+    // Get selected activities for this package
+    $activityIds = DB::table('event_package_activity')
+        ->where('package_id', $id)
+        ->pluck('activity_id')
+        ->toArray();
+
+    // Attach activity_ids to package object
+    $package->activity_ids = $activityIds;
+
+    // Get all activities for the dropdown
+    $activities = DB::table('activities')->get();
+
+    return Inertia::render('EventPackages/EditPackagePage', [
+        'package' => $package,
+        'activities' => $activities,
+        'auth' => [
+            'user' => Auth::user(),
+        ],
+    ]);
+}
+// public function edit($id)
+//     {
+//         $package = DB::table('events_package')
+//             ->where('id', $id)
+//             ->first();
+
+//         if (!$package) {
+//             abort(404);
+//         }
+
+//         // Get selected activities for this package
+//         $activityIds = DB::table('event_package_activity')
+//             ->where('package_id', $id)
+//             ->pluck('activity_id')
+//             ->toArray();
+
+//         // Attach activity_ids directly to package (IMPORTANT)
+//         $package->activity_ids = $activityIds;
+
+//         // Get all activities
+//         $activities = DB::table('activities')->get();
+
+//         return Inertia::render('EventPackages/EditPackagePage', [
+//             'package' => $package,
+//             'activities' => $activities,
+//         ]);
+//     }
 
     // public function update(Request $request, $id)
     // {

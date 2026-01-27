@@ -32,6 +32,7 @@ Route::get('/news/add', function () {
 
 
 
+
 // Route::get('/packages', function () {
 //     $packages = EventsPackage::all(); // fetch all packages
 //     $user = Auth::user()->load('role'); // load user with role
@@ -68,10 +69,16 @@ Route::get('/packages/add', function () {
 Route::post('/packages', [EventPackageController::class, 'store'])->name('packages.store');
 
 
+// To this:
+Route::match(['put', 'post'], '/packages/{id}', [EventPackageController::class, 'update'])
+    ->middleware(['auth'])
+    ->name('packages.update');
+
+
 Route::delete('/packages/{id}', [EventPackageController::class, 'destroy'])->name('packages.destroy');
 
 Route::get('/packages/{id}/edit', [EventPackageController::class, 'edit'])->name('packages.edit');
-Route::put('/packages/{id}', [EventPackageController::class, 'update'])->name('packages.update');
+// Route::put('/packages/{id}', [EventPackageController::class, 'update'])->name('packages.update');
 
 
 
