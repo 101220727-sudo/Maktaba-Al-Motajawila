@@ -15,6 +15,7 @@ export default function Edit({ mustVerifyEmail, status }) {
         >
             <Head title="الملف الشخصي" />
 
+
             <style>{`
                 :root {
                     --color-primary: #76499C;
@@ -283,6 +284,8 @@ export default function Edit({ mustVerifyEmail, status }) {
                             className="max-w-xl"
                         />
                     </div> */}
+
+                    
 
                     <div className="profile-card actions-card" style={{'--animation-order': 0}}>
                         <Link

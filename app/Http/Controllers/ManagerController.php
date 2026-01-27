@@ -62,10 +62,13 @@ public function updatePassword(Request $request, $id)
     $admin->save();
 
     // Return JSON success response for Inertia
-    return response()->json([
-        'success' => true,
-        'message' => 'Password updated successfully!'
-    ]);
+    // return response()->json([
+    //     'success' => true,
+    //     'message' => 'Password updated successfully!'
+    // ]);
+
+        return redirect()->back()->with('success', 'Password updated successfully!');
+
 }
 
 

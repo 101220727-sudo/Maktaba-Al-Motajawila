@@ -31,9 +31,18 @@ export default function ManagerDashboard({ admins, roles }) {
         password: newPass 
       }, {
         preserveScroll: true,
-        onSuccess: () => {
-          alert('تم تحديث كلمة المرور بنجاح!');
-        },
+        // onSuccess: () => {
+        //   alert('تم تحديث كلمة المرور بنجاح!');
+        // },
+
+                    onSuccess: (page) => {
+                // Check for flash message
+                if (page.props.flash?.success) {
+                    alert(page.props.flash.success);
+                } else {
+                    alert('تم تحديث كلمة المرور بنجاح!');
+                }
+            },
         onError: (errors) => {
           console.error('أخطاء التحقق:', errors);
           alert('فشل في تحديث كلمة المرور: ' + (errors.password || 'خطأ غير معروف'));
@@ -495,6 +504,13 @@ export default function ManagerDashboard({ admins, roles }) {
 
       <div className="dashboard-page">
         <div className="container">
+
+          
+        <Link href={route('logout')} method="post" as="button" className="dropdown-item">
+                                                تسجيل الخروج
+                                            </Link>  
+
+                                            
           <h1 className="page-title">لوحة إدارة المدير</h1>
 
           {/* Add New Admin Form */}

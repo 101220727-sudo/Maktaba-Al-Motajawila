@@ -928,10 +928,20 @@ export default function PackagesPage({ packages, auth }) {
                         </div>
 
                         <nav className="main-nav">
-                            <Link href="/">الصفحة الرئيسية</Link>
-                            <Link href={route('news')}>الأخبار</Link>
-                            
-                            {auth?.user ? (
+                            {/* <Link href="/">الصفحة الرئيسية</Link> */}
+                            <Link href={route('event.packages')
+}>الباقات</Link>
+                           {/* <Link href={route('logout')}>تسجيل الخروج</Link> */}
+<Link 
+    href={route('logout')} 
+    method="post" 
+    as="button" 
+    className="dropdown-item"
+>
+    تسجيل الخروج
+</Link>
+
+                            {/* {auth?.user ? (
                                 <div className="user-menu">
                                     <button 
                                         className="user-button"
@@ -957,7 +967,7 @@ export default function PackagesPage({ packages, auth }) {
                                     <Link href={route('login')}>تسجيل الدخول</Link>
                                     <Link href={route('register')}>انشاء حساب</Link>
                                 </>
-                            )}
+                            )} */}
                         </nav>
                     </div>
                 </header>

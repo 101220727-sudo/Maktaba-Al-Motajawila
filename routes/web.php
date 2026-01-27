@@ -82,10 +82,13 @@ Route::get('/news', function () {
     return Inertia::render('News/NewsPage', [
         'news' => $news,
         'auth' => [
-            'user' => Auth::user()->load('role'),
+            // 'user' => Auth::user()->load('role'),
+                        'user' => Auth::check() ? Auth::user()->load('role') : null,
+
         ],
     ]);
-})->middleware(['auth'])->name('news');
+// })->middleware(['auth'])->name('news');
+})->name('news');
 
 
 
@@ -258,16 +261,37 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::get('/event-request', function (Request $request) { 
-    $packages = EventsPackage::select('id', 'package_title')->get();
+// Route::get('/event-request', function (Request $request) { 
+//     $packages = EventsPackage::select('id', 'package_title')->get();
 
-    $selectedPackageId = $request->query('package_id'); // get package_id from query string
+//     $selectedPackageId = $request->query('package_id'); // get package_id from query string
+
+//     return Inertia::render('EventRequest/EventRequestPage', [
+//         'packages' => $packages,
+//         'selectedPackageId' => $selectedPackageId,
+//     ]);
+// })->name('event.request');
+Route::get('/event-request', function (Request $request) {
+    $packages = DB::table('events_package')->get();
+    
+    // Fetch activities for each package
+    $packages = $packages->map(function ($pkg) {
+        $pkg->activities = DB::table('event_package_activity')
+            ->join('activities', 'event_package_activity.activity_id', '=', 'activities.id')
+            ->where('event_package_activity.package_id', $pkg->id)
+            ->pluck('activities.name')
+            ->toArray();
+        return $pkg;
+    });
 
     return Inertia::render('EventRequest/EventRequestPage', [
-        'packages' => $packages,
-        'selectedPackageId' => $selectedPackageId,
+        'allPackages' => $packages,
+        'auth' => [
+            'user' => Auth::check() ? Auth::user()->load('role') : null,
+        ],
     ]);
 })->name('event.request');
+
 
 
 Route::get('/', function () {
