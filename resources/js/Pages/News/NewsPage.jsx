@@ -906,15 +906,48 @@ export default function NewsPage({ auth }) {
 
                                         <p className="news-text">{item.description}</p>
 
-                                        {item.image && (
+                                        {/* {item.image && (
                                             <div className="news-gallery">
-                                                <img 
+                                                 <img 
                                                     src={`/${item.image}`} 
                                                     className="news-gallery-img" 
                                                     alt={item.title}
-                                                />
+                                                /> 
                                             </div>
-                                        )}
+                                        )} */}
+
+
+
+
+                                        {item.image ? (
+    <div className="news-gallery">
+        <img 
+            src={`/storage/${item.image}`} 
+            className="news-gallery-img" 
+            alt={item.title}
+            onError={(e) => {
+                e.target.src = 'https://via.placeholder.com/400x300?text=صورة+غير+متوفرة';
+                e.target.onerror = null;
+            }}
+        />
+    </div>
+) : (
+    <div className="news-gallery">
+        <div style={{
+            width: '100%',
+            height: '130px',
+            backgroundColor: '#f0f0f0',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#999',
+            fontSize: '0.9rem'
+        }}>
+            لا توجد صورة
+        </div>
+    </div>
+)}
                                     </article>
                                 ))}
                             </div>

@@ -866,7 +866,7 @@ const AddNewsPage = ({ auth }) => {
                                 />
                             </div>
 
-                            <div className="form-group">
+                            {/* <div className="form-group">
                                 <label htmlFor="image">إرفاق صورة رئيسية للخبر</label>
                                 <input 
                                     id="image" 
@@ -875,7 +875,45 @@ const AddNewsPage = ({ auth }) => {
                                     onChange={(e) => setImage(e.target.files[0])}
                                     accept="image/*" 
                                 />
-                            </div>
+                            </div> */}
+                            <div className="form-group">
+    <label htmlFor="image">إرفاق صورة رئيسية للخبر</label>
+    <input 
+        id="image" 
+        type="file" 
+        name="image"
+        onChange={(e) => setImage(e.target.files[0])}
+        accept="image/*" 
+    />
+    
+    {/* Image Preview */}
+    {image && (
+        <div style={{
+            marginTop: '1rem',
+            padding: '1rem',
+            backgroundColor: '#f9f7fb',
+            borderRadius: '12px',
+            textAlign: 'center'
+        }}>
+            <p style={{
+                fontSize: '0.9rem',
+                color: 'var(--color-primary)',
+                marginBottom: '0.5rem',
+                fontWeight: '600'
+            }}>معاينة الصورة:</p>
+            <img 
+                src={URL.createObjectURL(image)} 
+                alt="Preview" 
+                style={{
+                    maxWidth: '100%',
+                    maxHeight: '300px',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+                }}
+            />
+        </div>
+    )}
+</div>
 
                             <div className="form-actions">
                                 <button className="btn btn-primary" type="submit">إضافة الخبر</button>

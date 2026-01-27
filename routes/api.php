@@ -23,7 +23,14 @@ Route::delete('/event-packages/{id}', [EventPackageController::class, 'destroy']
 
 Route::post('/news', [NewsController::class, 'store']);
 
-Route::delete('/news/{id}', [App\Http\Controllers\Api\NewsController::class, 'destroy']);
+// Route::delete('/news/{id}', [App\Http\Controllers\Api\NewsController::class, 'destroy']);
+
+
+
+// Route::get('/news', [NewsController::class, 'index']);
+// Route::post('/news', [NewsController::class, 'store']);
+Route::delete('/news/{id}', [NewsController::class, 'destroy']);
+
 
 Route::get('/event-packages', [EventPackageController::class, 'index'])->name('event.packages.index');
 Route::get('/event-packages/{id}', [EventPackageController::class, 'show'])->name('event.packages.show');

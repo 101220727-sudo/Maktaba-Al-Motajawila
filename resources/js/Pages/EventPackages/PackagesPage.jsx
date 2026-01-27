@@ -1015,8 +1015,18 @@ export default function PackagesPage({ packages, auth }) {
                                     className="package-card"
                                     style={{'--animation-order': index}}
                                 >
-                                    <img src={pkg.main_image || 'https://via.placeholder.com/400x300'} alt={pkg.package_title} className="package-image" />
-                                    
+                                    {/* <img src={pkg.main_image || 'https://via.placeholder.com/400x300'} alt={pkg.package_title} className="package-image" /> */}
+                                    <img 
+    src={pkg.main_image ? `/storage/${pkg.main_image}` : 'https://via.placeholder.com/400x300?text=لا+توجد+صورة'} 
+    alt={pkg.package_title} 
+    className="package-image"
+    onError={(e) => {
+        e.target.src = 'https://via.placeholder.com/400x300?text=صورة+غير+متوفرة';
+        e.target.onerror = null;
+    }}
+/>
+
+
                                     <div className="package-content">
                                         <h2 className="package-title">{pkg.package_title}</h2>
                                         <p className="package-description">{pkg.description || 'لا يوجد وصف متاح.'}</p>

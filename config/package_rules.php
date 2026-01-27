@@ -115,5 +115,11 @@ return array (
     array (
       'suitable_gender' => 'mixed',
     ),
+    2 => 
+    array (
+      'min_age' => '4',
+      'max_age' => '10',
+      'suitable_gender' => 'mixed',
+    ),
   ),
 );

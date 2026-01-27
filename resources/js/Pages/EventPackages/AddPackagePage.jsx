@@ -19,7 +19,9 @@ export default function AddPackagePage({ activities, auth }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('packages.store'));
+            post(route('packages.store'), {
+        forceFormData: true, // Important for file uploads
+    });
     };
 
     return (
@@ -469,7 +471,7 @@ export default function AddPackagePage({ activities, auth }) {
                             )}
                         </div>
 
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label htmlFor="main_image">رابط الصورة الرئيسية</label>
                             <input
                                 id="main_image"
@@ -481,7 +483,51 @@ export default function AddPackagePage({ activities, auth }) {
                             {errors.main_image && (
                                 <div className="error-message">{errors.main_image}</div>
                             )}
-                        </div>
+                        </div> */}
+
+
+
+<div className="form-group">
+    <label htmlFor="main_image">الصورة الرئيسية</label>
+    <input
+        id="main_image"
+        type="file"
+        accept="image/*"
+        onChange={e => setData('main_image', e.target.files[0])}
+    />
+    {errors.main_image && (
+        <div className="error-message">{errors.main_image}</div>
+    )}
+    
+    {/* ✅ Image Preview */}
+    {data.main_image && (
+        <div style={{
+            marginTop: '1rem',
+            padding: '1rem',
+            backgroundColor: '#f9f7fb',
+            borderRadius: '12px',
+            textAlign: 'center'
+        }}>
+            <p style={{
+                fontSize: '0.9rem',
+                color: 'var(--color-primary)',
+                marginBottom: '0.5rem',
+                fontWeight: '600'
+            }}>معاينة الصورة:</p>
+            <img 
+                src={URL.createObjectURL(data.main_image)} 
+                alt="Preview" 
+                style={{
+                    maxWidth: '100%',
+                    maxHeight: '300px',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+                }}
+            />
+        </div>
+    )}
+</div>
+
 
                         <div className="grid-2">
                             <div className="form-group">

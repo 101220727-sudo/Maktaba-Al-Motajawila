@@ -104,52 +104,223 @@ public function index(Request $request)
     ]);
 }
 
-public function store(Request $request)
-{
-    $request->validate([
-        'package_title' => 'required|string|max:255',
-        'description'   => 'nullable|string',
-        'main_image'    => 'nullable|string',
-        'total_price'   => 'required|numeric',
-        'event_time'    => 'required',
-        'activity_ids'  => 'required|array',
-        'activity_ids.*'=> 'integer|exists:activities,id',
-        // New filtering fields
-        'min_age'       => 'nullable|integer|min:4|max:20',
-        'max_age'       => 'nullable|integer|min:4|max:20',
-        'min_visitors'  => 'nullable|integer|min:2',
-        'max_visitors'  => 'nullable|integer',
-        'suitable_gender' => 'required|in:male,female,mixed',
-    ]);
 
-    // Insert package
-    $packageId = DB::table('events_package')->insertGetId([
-        'package_title' => $request->package_title,
-        'description'   => $request->description,
-        'main_image'    => $request->main_image,
-        'total_price'   => $request->total_price,
-        'event_time'    => $request->event_time,
-    ]);
 
-    // Insert into pivot table for each selected activity
-    foreach ($request->activity_ids as $activityId) {
-        DB::table('event_package_activity')->insert([
-            'package_id'  => $packageId,
-            'activity_id' => $activityId,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public function store(Request $request)
+    {
+        $request->validate([
+            'package_title' => 'required|string|max:255',
+            'description'   => 'nullable|string',
+            'main_image'    => 'nullable|image|max:2048', // ✅ CHANGED: image file, not string
+            'total_price'   => 'required|numeric',
+            'event_time'    => 'required',
+            'activity_ids'  => 'required|array',
+            'activity_ids.*'=> 'integer|exists:activities,id',
+            'min_age'       => 'nullable|integer|min:4|max:20',
+            'max_age'       => 'nullable|integer|min:4|max:20',
+            'min_visitors'  => 'nullable|integer|min:2',
+            'max_visitors'  => 'nullable|integer',
+            'suitable_gender' => 'required|in:male,female,mixed',
         ]);
+
+        // ✅ Handle image upload
+        $imagePath = null;
+        if ($request->hasFile('main_image')) {
+            $imagePath = $request->file('main_image')->store('packages', 'public');
+        }
+
+        // Insert package
+        $packageId = DB::table('events_package')->insertGetId([
+            'package_title' => $request->package_title,
+            'description'   => $request->description,
+            'main_image'    => $imagePath, // ✅ Store the path
+            'total_price'   => $request->total_price,
+            'event_time'    => $request->event_time,
+        ]);
+
+        // Insert into pivot table for each selected activity
+        foreach ($request->activity_ids as $activityId) {
+            DB::table('event_package_activity')->insert([
+                'package_id'  => $packageId,
+                'activity_id' => $activityId,
+            ]);
+        }
+
+        // Update config file with package rules
+        $this->updatePackageRules($packageId, [
+            'min_age' => $request->min_age,
+            'max_age' => $request->max_age,
+            'min_visitors' => $request->min_visitors,
+            'max_visitors' => $request->max_visitors,
+            'suitable_gender' => $request->suitable_gender,
+        ]);
+
+        return redirect()->route('event.packages')->with('success', 'Package added successfully!');
     }
 
-    // Update config file with package rules
-    $this->updatePackageRules($packageId, [
-        'min_age' => $request->min_age,
-        'max_age' => $request->max_age,
-        'min_visitors' => $request->min_visitors,
-        'max_visitors' => $request->max_visitors,
-        'suitable_gender' => $request->suitable_gender,
-    ]);
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'package_title' => 'required|string|max:255',
+            'description'   => 'nullable|string',
+            'main_image'    => 'nullable|image|max:2048', // ✅ CHANGED: image file
+            'total_price'   => 'required|numeric',
+            'event_time'    => 'required',
+            'activity_ids'  => 'required|array',
+            'activity_ids.*'=> 'exists:activities,id',
+        ]);
 
-    return redirect()->route('event.packages')->with('success', 'Package added successfully!');
-}
+        DB::transaction(function () use ($request, $id) {
+            // Get current package to check for old image
+            $currentPackage = DB::table('events_package')->where('id', $id)->first();
+
+            // ✅ Handle image upload
+            $imagePath = $currentPackage->main_image; // Keep old image by default
+            
+            if ($request->hasFile('main_image')) {
+                // Delete old image if exists
+                if ($currentPackage->main_image) {
+                    Storage::disk('public')->delete($currentPackage->main_image);
+                }
+                
+                // Store new image
+                $imagePath = $request->file('main_image')->store('packages', 'public');
+            }
+
+            // Update package
+            DB::table('events_package')
+                ->where('id', $id)
+                ->update([
+                    'package_title' => $request->package_title,
+                    'description'   => $request->description,
+                    'main_image'    => $imagePath, // ✅ Update with new or keep old
+                    'total_price'   => $request->total_price,
+                    'event_time'    => $request->event_time,
+                ]);
+
+            // Reset activities
+            DB::table('event_package_activity')
+                ->where('package_id', $id)
+                ->delete();
+
+            // Insert new activities
+            foreach ($request->activity_ids as $activityId) {
+                DB::table('event_package_activity')->insert([
+                    'package_id'  => $id,
+                    'activity_id' => $activityId,
+                ]);
+            }
+        });
+
+        return redirect()
+            ->route('event.packages')
+            ->with('success', 'Package updated successfully!');
+    }
+
+    public function destroy($id)
+    {
+        // ✅ Get package first to delete image
+        $package = DB::table('events_package')->where('id', $id)->first();
+        
+        if ($package && $package->main_image) {
+            Storage::disk('public')->delete($package->main_image);
+        }
+        
+        $deleted = DB::table('events_package')->where('id', $id)->delete();
+
+        if ($deleted) {
+            return redirect()->route('event.packages')->with('success', 'Package deleted successfully!');
+        }
+
+        return redirect()->route('event.packages')->with('error', 'Package not found!');
+    }
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+// public function store(Request $request)
+// {
+//     $request->validate([
+//         'package_title' => 'required|string|max:255',
+//         'description'   => 'nullable|string',
+//         'main_image'    => 'nullable|string',
+//         'total_price'   => 'required|numeric',
+//         'event_time'    => 'required',
+//         'activity_ids'  => 'required|array',
+//         'activity_ids.*'=> 'integer|exists:activities,id',
+//         // New filtering fields
+//         'min_age'       => 'nullable|integer|min:4|max:20',
+//         'max_age'       => 'nullable|integer|min:4|max:20',
+//         'min_visitors'  => 'nullable|integer|min:2',
+//         'max_visitors'  => 'nullable|integer',
+//         'suitable_gender' => 'required|in:male,female,mixed',
+//     ]);
+
+//     // Insert package
+//     $packageId = DB::table('events_package')->insertGetId([
+//         'package_title' => $request->package_title,
+//         'description'   => $request->description,
+//         'main_image'    => $request->main_image,
+//         'total_price'   => $request->total_price,
+//         'event_time'    => $request->event_time,
+//     ]);
+
+//     // Insert into pivot table for each selected activity
+//     foreach ($request->activity_ids as $activityId) {
+//         DB::table('event_package_activity')->insert([
+//             'package_id'  => $packageId,
+//             'activity_id' => $activityId,
+//         ]);
+//     }
+
+//     // Update config file with package rules
+//     $this->updatePackageRules($packageId, [
+//         'min_age' => $request->min_age,
+//         'max_age' => $request->max_age,
+//         'min_visitors' => $request->min_visitors,
+//         'max_visitors' => $request->max_visitors,
+//         'suitable_gender' => $request->suitable_gender,
+//     ]);
+
+//     return redirect()->route('event.packages')->with('success', 'Package added successfully!');
+// }
 
 // Add this helper function in the same controller
 private function updatePackageRules($packageId, $rules)
@@ -184,17 +355,21 @@ private function updatePackageRules($packageId, $rules)
 
 
     // Delete a package
-    public function destroy($id)
-    {
-        $deleted = DB::table('events_package')->where('id', $id)->delete();
+    // public function destroy($id)
+    // {
+    //     $deleted = DB::table('events_package')->where('id', $id)->delete();
 
-        if ($deleted) {
-            return redirect()->route('event.packages')->with('success', 'Package deleted successfully!');
-        }
+    //     if ($deleted) {
+    //         return redirect()->route('event.packages')->with('success', 'Package deleted successfully!');
+    //     }
 
-        return redirect()->route('event.packages')->with('error', 'Package not found!');
-    }
+    //     return redirect()->route('event.packages')->with('error', 'Package not found!');
+    // }
 
+
+
+
+    //hay already commented
     // Edit a package
     // public function edit($id)
     // {
@@ -261,7 +436,7 @@ private function updatePackageRules($packageId, $rules)
 // }
 
 
-
+//li fu2 already commented
 
 //kenet sa7 li fu2 abl multiple act
 
@@ -294,49 +469,49 @@ public function edit($id)
         ]);
     }
 
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'package_title' => 'required|string|max:255',
-            'description'   => 'nullable|string',
-            'main_image'    => 'nullable|string',
-            'total_price'   => 'required|numeric',
-            'event_time'    => 'required',
-            'activity_ids'  => 'required|array',
-            'activity_ids.*'=> 'exists:activities,id',
-        ]);
+    // public function update(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'package_title' => 'required|string|max:255',
+    //         'description'   => 'nullable|string',
+    //         'main_image'    => 'nullable|string',
+    //         'total_price'   => 'required|numeric',
+    //         'event_time'    => 'required',
+    //         'activity_ids'  => 'required|array',
+    //         'activity_ids.*'=> 'exists:activities,id',
+    //     ]);
 
-        DB::transaction(function () use ($request, $id) {
+    //     DB::transaction(function () use ($request, $id) {
 
-            // Update package
-            DB::table('events_package')
-                ->where('id', $id)
-                ->update([
-                    'package_title' => $request->package_title,
-                    'description'   => $request->description,
-                    'main_image'    => $request->main_image,
-                    'total_price'   => $request->total_price,
-                    'event_time'    => $request->event_time,
-                ]);
+    //         // Update package
+    //         DB::table('events_package')
+    //             ->where('id', $id)
+    //             ->update([
+    //                 'package_title' => $request->package_title,
+    //                 'description'   => $request->description,
+    //                 'main_image'    => $request->main_image,
+    //                 'total_price'   => $request->total_price,
+    //                 'event_time'    => $request->event_time,
+    //             ]);
 
-            // Reset activities
-            DB::table('event_package_activity')
-                ->where('package_id', $id)
-                ->delete();
+    //         // Reset activities
+    //         DB::table('event_package_activity')
+    //             ->where('package_id', $id)
+    //             ->delete();
 
-            // Insert new activities
-            foreach ($request->activity_ids as $activityId) {
-                DB::table('event_package_activity')->insert([
-                    'package_id'  => $id,
-                    'activity_id' => $activityId,
-                ]);
-            }
-        });
+    //         // Insert new activities
+    //         foreach ($request->activity_ids as $activityId) {
+    //             DB::table('event_package_activity')->insert([
+    //                 'package_id'  => $id,
+    //                 'activity_id' => $activityId,
+    //             ]);
+    //         }
+    //     });
 
-        return redirect()
-            ->route('event.packages')
-            ->with('success', 'Package updated successfully!');
-    }
+    //     return redirect()
+    //         ->route('event.packages')
+    //         ->with('success', 'Package updated successfully!');
+    // }
 
 //     public function edit($id)
 // {
