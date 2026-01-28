@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\EventRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class EventRequestController extends Controller
 {
@@ -15,7 +16,7 @@ class EventRequestController extends Controller
 
         $request->validate([
             'event_package_id' => 'required|exists:events_package,id',
-            'event_date' => 'required|date|after_or_equal:today',
+'event_date' => 'required|date_format:Y-m-d H:i:s|after:now',
             'location' => 'required|string|max:255',
             'age' => 'required|integer|min:1',
             'nb_of_visitors' => 'required|integer|min:1',
@@ -27,7 +28,10 @@ class EventRequestController extends Controller
         $eventRequest = EventRequest::create([
             'user_id' => $user->id,
             'event_package_id' => $request->event_package_id,
-            'event_date' => $request->event_date,
+'event_date' => Carbon::createFromFormat(
+    'Y-m-d H:i:s',
+    $request->event_date
+),
             'location' => $request->location,
             'age' => $request->age,
             'nb_of_visitors' => $request->nb_of_visitors,

@@ -24,6 +24,7 @@ Route::delete('/event-packages/{id}', [EventPackageController::class, 'destroy']
 Route::post('/news', [NewsController::class, 'store']);
 
 // Route::delete('/news/{id}', [App\Http\Controllers\Api\NewsController::class, 'destroy']);
+Route::get('/packages', [EventPackageController::class, 'index']);
 
 
 

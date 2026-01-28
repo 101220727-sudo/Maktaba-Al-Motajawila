@@ -933,6 +933,16 @@ export default function PackagesPage({ packages, auth }) {
 }>الباقات</Link>
                            {/* <Link href={route('logout')}>تسجيل الخروج</Link> */}
 <Link 
+    href={route('events.receive')} 
+    // method="post" 
+    // as="button" 
+    // className="dropdown-item"
+>
+    تأكيد الباقات
+</Link>
+
+
+<Link 
     href={route('logout')} 
     method="post" 
     as="button" 

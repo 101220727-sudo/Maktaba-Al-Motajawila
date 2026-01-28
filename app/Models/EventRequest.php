@@ -50,6 +50,7 @@ class EventRequest extends Model
 		'phone',
 		'status'
 	];
+	
 
 	public function events_package()
 	{

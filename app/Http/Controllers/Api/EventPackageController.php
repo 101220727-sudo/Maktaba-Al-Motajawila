@@ -13,102 +13,182 @@ use Illuminate\Support\Facades\Auth;  // ✅ ADD THIS LINE
 class EventPackageController extends Controller
 {
 
-public function index(Request $request)
-{
-    // Get package rules from config
-    $packageRules = config('package_rules.packages', []);
+// public function index(Request $request)
+// {
+//     // Get package rules from config
+//     $packageRules = config('package_rules.packages', []);
     
-    // DEBUGGING - Remove after fixing
-    \Log::info('=== PACKAGE FILTER DEBUG ===');
-    \Log::info('Request params:', [
-        'age' => $request->age,
-        'visitors' => $request->visitors,
-        'gender' => $request->gender,
-    ]);
-    \Log::info('Config loaded?', [
-        'rules_count' => count($packageRules),
-        'rules' => $packageRules
-    ]);
+//     // DEBUGGING - Remove after fixing
+//     \Log::info('=== PACKAGE FILTER DEBUG ===');
+//     \Log::info('Request params:', [
+//         'age' => $request->age,
+//         'visitors' => $request->visitors,
+//         'gender' => $request->gender,
+//     ]);
+//     \Log::info('Config loaded?', [
+//         'rules_count' => count($packageRules),
+//         'rules' => $packageRules
+//     ]);
     
-    // Get all packages first
-    $packages = DB::table('events_package')->get();
+//     // Get all packages first
+//     $packages = DB::table('events_package')->get();
     
-    \Log::info('Total packages from DB:', ['count' => $packages->count()]);
+//     \Log::info('Total packages from DB:', ['count' => $packages->count()]);
     
-    // Filter packages if criteria provided
-    if ($request->has('age') || $request->has('visitors') || $request->has('gender')) {
-        \Log::info('Filter conditions met - starting filtering...');
+//     // Filter packages if criteria provided
+//     if ($request->has('age') || $request->has('visitors') || $request->has('gender')) {
+//         \Log::info('Filter conditions met - starting filtering...');
         
-        $packages = $packages->filter(function($package) use ($request, $packageRules) {
-            $rules = $packageRules[$package->id] ?? null;
+//         $packages = $packages->filter(function($package) use ($request, $packageRules) {
+//             $rules = $packageRules[$package->id] ?? null;
             
-            \Log::info("Package {$package->id} ({$package->package_title}):", [
-                'has_rules' => !is_null($rules),
-                'rules' => $rules
-            ]);
+//             \Log::info("Package {$package->id} ({$package->package_title}):", [
+//                 'has_rules' => !is_null($rules),
+//                 'rules' => $rules
+//             ]);
             
-            // If no rules defined for this package, show it
-            if (!$rules) {
-                \Log::info("  -> No rules, SHOWING");
-                return true;
-            }
+//             // If no rules defined for this package, show it
+//             if (!$rules) {
+//                 \Log::info("  -> No rules, SHOWING");
+//                 return true;
+//             }
             
-            // Check age criteria
-            if ($request->has('age') && $request->age) {
-                $age = (int)$request->age;
+//             // Check age criteria
+//             if ($request->has('age') && $request->age) {
+//                 $age = (int)$request->age;
                 
-                if (isset($rules['min_age']) && $age < $rules['min_age']) {
-                    \Log::info("  -> FILTERED: Age {$age} < min {$rules['min_age']}");
-                    return false;
+//                 if (isset($rules['min_age']) && $age < $rules['min_age']) {
+//                     \Log::info("  -> FILTERED: Age {$age} < min {$rules['min_age']}");
+//                     return false;
+//                 }
+                
+//                 if (isset($rules['max_age']) && $age > $rules['max_age']) {
+//                     \Log::info("  -> FILTERED: Age {$age} > max {$rules['max_age']}");
+//                     return false;
+//                 }
+//             }
+            
+//             // Check visitors criteria
+//             if ($request->has('visitors') && $request->visitors) {
+//                 $visitors = (int)$request->visitors;
+                
+//                 if (isset($rules['min_visitors']) && $visitors < $rules['min_visitors']) {
+//                     \Log::info("  -> FILTERED: Visitors {$visitors} < min {$rules['min_visitors']}");
+//                     return false;
+//                 }
+                
+//                 if (isset($rules['max_visitors']) && $visitors > $rules['max_visitors']) {
+//                     \Log::info("  -> FILTERED: Visitors {$visitors} > max {$rules['max_visitors']}");
+//                     return false;
+//                 }
+//             }
+            
+//             // Check gender criteria
+//             if ($request->has('gender') && $request->gender) {
+//                 $gender = $request->gender;
+                
+//                 if (isset($rules['suitable_gender']) && $rules['suitable_gender'] !== 'mixed') {
+//                     if ($rules['suitable_gender'] !== $gender) {
+//                         \Log::info("  -> FILTERED: Gender {$gender} != {$rules['suitable_gender']}");
+//                         return false;
+//                     }
+//                 }
+//             }
+            
+//             \Log::info("  -> PASSED all filters, SHOWING");
+//             return true;
+//         })->values();
+        
+//         \Log::info('After filtering:', ['count' => $packages->count()]);
+//     }
+    
+//     return Inertia::render('EventPackages/PackagesPage', [
+//         'packages' => $packages
+//     ]);
+// }
+
+
+    public function index(Request $request)
+    {
+        // Get package rules from config
+        $packageRules = config('package_rules.packages', []);
+        
+        // Get all packages first
+        $packages = DB::table('events_package')->get();
+        
+        // Get activities for each package
+        $packages = $packages->map(function($package) {
+            $activities = DB::table('event_package_activity')
+                ->join('activities', 'event_package_activity.activity_id', '=', 'activities.id')
+                ->where('event_package_activity.package_id', $package->id)
+                ->pluck('activities.name')
+                ->toArray();
+            
+            $package->activities = $activities;
+            return $package;
+        });
+        
+        // Filter packages if criteria provided
+        if ($request->has('age') || $request->has('visitors') || $request->has('gender')) {
+            $packages = $packages->filter(function($package) use ($request, $packageRules) {
+                $rules = $packageRules[$package->id] ?? null;
+                
+                // If no rules defined for this package, show it
+                if (!$rules) {
+                    return true;
                 }
                 
-                if (isset($rules['max_age']) && $age > $rules['max_age']) {
-                    \Log::info("  -> FILTERED: Age {$age} > max {$rules['max_age']}");
-                    return false;
-                }
-            }
-            
-            // Check visitors criteria
-            if ($request->has('visitors') && $request->visitors) {
-                $visitors = (int)$request->visitors;
-                
-                if (isset($rules['min_visitors']) && $visitors < $rules['min_visitors']) {
-                    \Log::info("  -> FILTERED: Visitors {$visitors} < min {$rules['min_visitors']}");
-                    return false;
-                }
-                
-                if (isset($rules['max_visitors']) && $visitors > $rules['max_visitors']) {
-                    \Log::info("  -> FILTERED: Visitors {$visitors} > max {$rules['max_visitors']}");
-                    return false;
-                }
-            }
-            
-            // Check gender criteria
-            if ($request->has('gender') && $request->gender) {
-                $gender = $request->gender;
-                
-                if (isset($rules['suitable_gender']) && $rules['suitable_gender'] !== 'mixed') {
-                    if ($rules['suitable_gender'] !== $gender) {
-                        \Log::info("  -> FILTERED: Gender {$gender} != {$rules['suitable_gender']}");
+                // Check age criteria
+                if ($request->has('age') && $request->age) {
+                    $age = (int)$request->age;
+                    
+                    if (isset($rules['min_age']) && $age < $rules['min_age']) {
+                        return false;
+                    }
+                    
+                    if (isset($rules['max_age']) && $age > $rules['max_age']) {
                         return false;
                     }
                 }
-            }
-            
-            \Log::info("  -> PASSED all filters, SHOWING");
-            return true;
-        })->values();
+                
+                // Check visitors criteria
+                if ($request->has('visitors') && $request->visitors) {
+                    $visitors = (int)$request->visitors;
+                    
+                    if (isset($rules['min_visitors']) && $visitors < $rules['min_visitors']) {
+                        return false;
+                    }
+                    
+                    if (isset($rules['max_visitors']) && $visitors > $rules['max_visitors']) {
+                        return false;
+                    }
+                }
+                
+                // Check gender criteria
+                if ($request->has('gender') && $request->gender) {
+                    $gender = $request->gender;
+                    
+                    if (isset($rules['suitable_gender']) && $rules['suitable_gender'] !== 'mixed') {
+                        if ($rules['suitable_gender'] !== $gender) {
+                            return false;
+                        }
+                    }
+                }
+                
+                return true;
+            })->values();
+        }
         
-        \Log::info('After filtering:', ['count' => $packages->count()]);
+        // Return JSON for API requests
+        if ($request->is('api/*')) {
+            return response()->json($packages);
+        }
+        
+        // Return Inertia view for web requests
+        return Inertia::render('EventPackages/PackagesPage', [
+            'packages' => $packages
+        ]);
     }
-    
-    return Inertia::render('EventPackages/PackagesPage', [
-        'packages' => $packages
-    ]);
-}
-
-
-
 
 
 

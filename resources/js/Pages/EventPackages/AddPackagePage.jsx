@@ -531,14 +531,14 @@ export default function AddPackagePage({ activities, auth }) {
 
                         <div className="grid-2">
                             <div className="form-group">
-                                <label htmlFor="total_price">السعر الإجمالي</label>
+                                <label htmlFor="total_price">السعر الإجمالي $</label>
                                 <input
                                     id="total_price"
                                     type="number"
-                                    step="0.01"
+                                    step="1"
                                     value={data.total_price}
                                     onChange={e => setData('total_price', e.target.value)}
-                                    placeholder="0.00"
+                                    placeholder="00"
                                 />
                                 {errors.total_price && (
                                     <div className="error-message">{errors.total_price}</div>
@@ -546,10 +546,10 @@ export default function AddPackagePage({ activities, auth }) {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="event_time">وقت الفعالية</label>
+                                <label htmlFor="event_time">وقت الفعالية دقيقة</label>
                                 <input
                                     id="event_time"
-                                    type="time"
+                                    type="duration"
                                     value={data.event_time}
                                     onChange={e => setData('event_time', e.target.value)}
                                 />
@@ -603,7 +603,7 @@ export default function AddPackagePage({ activities, auth }) {
                                         onChange={e => setData('min_age', e.target.value)}
                                         placeholder="مثال: 4"
                                         min="4"
-                                        max="20"
+                                        max="18"
                                     />
                                     {errors.min_age && (
                                         <div className="error-message">{errors.min_age}</div>
@@ -617,9 +617,9 @@ export default function AddPackagePage({ activities, auth }) {
                                         type="number"
                                         value={data.max_age}
                                         onChange={e => setData('max_age', e.target.value)}
-                                        placeholder="مثال: 20"
+                                        placeholder="مثال: 18"
                                         min="4"
-                                        max="20"
+                                        max="18"
                                     />
                                     {errors.max_age && (
                                         <div className="error-message">{errors.max_age}</div>
