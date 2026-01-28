@@ -266,66 +266,6 @@ class EventPackageController extends Controller
         return redirect()->route('event.packages')->with('success', 'Package added successfully!');
     }
 
-    // public function update(Request $request, $id)
-    // {
-    //     $request->validate([
-    //         'package_title' => 'required|string|max:255',
-    //         'description'   => 'nullable|string',
-    //         'main_image'    => 'nullable|image|max:2048', // ✅ CHANGED: image file
-    //         'total_price'   => 'required|numeric',
-    //         'event_time'    => 'required',
-    //         'activity_ids'  => 'required|array',
-    //         'activity_ids.*'=> 'exists:activities,id',
-    //     ]);
-
-    //     DB::transaction(function () use ($request, $id) {
-    //         // Get current package to check for old image
-    //         $currentPackage = DB::table('events_package')->where('id', $id)->first();
-
-    //         // ✅ Handle image upload
-    //         $imagePath = $currentPackage->main_image; // Keep old image by default
-            
-    //         if ($request->hasFile('main_image')) {
-    //             // Delete old image if exists
-    //             if ($currentPackage->main_image) {
-    //                 Storage::disk('public')->delete($currentPackage->main_image);
-    //             }
-                
-    //             // Store new image
-    //             $imagePath = $request->file('main_image')->store('packages', 'public');
-    //         }
-
-    //         // Update package
-    //         DB::table('events_package')
-    //             ->where('id', $id)
-    //             ->update([
-    //                 'package_title' => $request->package_title,
-    //                 'description'   => $request->description,
-    //                 'main_image'    => $imagePath, // ✅ Update with new or keep old
-    //                 'total_price'   => $request->total_price,
-    //                 'event_time'    => $request->event_time,
-    //             ]);
-
-    //         // Reset activities
-    //         DB::table('event_package_activity')
-    //             ->where('package_id', $id)
-    //             ->delete();
-
-    //         // Insert new activities
-    //         foreach ($request->activity_ids as $activityId) {
-    //             DB::table('event_package_activity')->insert([
-    //                 'package_id'  => $id,
-    //                 'activity_id' => $activityId,
-    //             ]);
-    //         }
-    //     });
-
-    //     return redirect()
-    //         ->route('event.packages')
-    //         ->with('success', 'Package updated successfully!');
-    // }
-
-
 
     public function update(Request $request, $id)
 {
