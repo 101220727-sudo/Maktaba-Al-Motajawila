@@ -777,7 +777,7 @@ const AddNewsPage = ({ auth }) => {
                 <header className="main-header">
                     <div className="nav-container">
                         <div className="logo">
-                            <img src="/assets/images/logo.png" alt="شعار المكتبة" className="logo-img" />
+                            <img src="/images/logo.png" alt="شعار المكتبة" className="logo-img" />
                             <div className="logo-text-wrap">
                                 <span className="logo-text-ar-big">مكتبة مهدي المتجولة</span>
                                 <span className="logo-text-sub">مكتبة على عجلات تجوب المناطق اللبنانية</span>
