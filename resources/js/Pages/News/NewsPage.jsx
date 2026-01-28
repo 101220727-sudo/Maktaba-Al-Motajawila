@@ -819,12 +819,17 @@ export default function NewsPage({ auth }) {
                             {isAdminNews && (
                                 <Link href={route('news.add')} className="add-news-btn"> إضافة خبر </Link>
                             )}
-                            
-                            {/* Event Packages - for registered_user or admin_events */}
-                            {/* {(isRegisteredUser || isAdminEvents) && (
-                                <Link href={route('event.packages')}>الفعاليات</Link>
-                            )} */}
 
+                               <Link href={route('logout')} method="post" as="button" >
+                                                تسجيل الخروج
+                                            </Link>
+                            
+                           {isRegisteredUser && (
+                                                <Link href={route('profile.edit')} >
+                                                    الملف الشخصي
+                                                </Link>
+                                            )}
+{/* 
                             {user ? (
                                 <div className="user-menu">
                                     <button 
@@ -855,7 +860,7 @@ export default function NewsPage({ auth }) {
                                     <Link href={route('register')}>تسجيل</Link>
                                     <Link href={route('login')}>تسجيل الدخول</Link>
                                 </>
-                            )}
+                            )} */}
                         </nav>
                     </div>
                 </header>
