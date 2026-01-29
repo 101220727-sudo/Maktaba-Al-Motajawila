@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
@@ -200,6 +198,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 }
 
                 .main-nav {
+                    
                     display: flex;
                     align-items: center;
                     gap: 2rem;
@@ -766,8 +765,8 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 .cta-section {
                     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-teal) 100%);
                     color: white;
-                    padding: 4rem 0;
-                    margin-top: 2rem;
+                    padding: 2.5rem 0;
+                    margin-top: 1.5rem;
                     position: relative;
                     overflow: hidden;
                 }
@@ -1056,7 +1055,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             ) : (
                                 <>
                                     <Link href={route('login')}>تسجيل الدخول</Link>
-                                    <Link href={route('register')}>انشاء حساب</Link> 
+                                    <Link href={route('register')}>إنشاء حساب</Link> 
                                 </>
                             )}
                         </nav>
@@ -1091,7 +1090,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         <div className="hero-box">
                             <h2>مكتبة على عجلات</h2>
                             <p>
-                                قصص، أنشطة فنية، زاوية الواقع الافتراضي، ومسابقات قراءة — 
+                                قصص، أنشطة فنية، زاوية الواقع الافتراضي، وتحديات ثقافية  
                                 كلّها داخل حافلة ملوّنة تنشر الفرح والمعرفة.
                             </p>
                         </div>
@@ -1175,14 +1174,31 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             {latestNews.length > 0 ? (
                                 latestNews.map(item => (
                                     <article key={item.id} className="card news-card">
-                                        {/* <p className="news-tag">نشاط</p> */}
-                                        <h3>{item.title}</h3>
-                                        <p>{item.description.substring(0, 120)}...</p>
-                                    </article>
+    <h3 style={{ margin: '0 0 10px 0', fontSize: '1.1rem' }}>
+        {item.title}
+        <span
+            style={{
+                fontSize: '0.75rem',
+                color: '#888',
+                marginRight: '8px',
+                fontWeight: 'normal'
+            }}
+        >
+            · {new Date(item.published_at).toLocaleDateString('ar-LB', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            })}
+        </span>
+    </h3>
+
+    <p>{item.description.substring(0, 120)}...</p>
+</article>
+
                                 ))
                             ) : (
                                 <>
-                                    <article className="card news-card">
+                                    {/* <article className="card news-card">
                                         <p className="news-tag">تحديث</p>
                                         <h3>إطلاق موقعنا الإلكتروني الجديد</h3>
                                         <p>
@@ -1198,7 +1214,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                             من خلال زيارات المدارس والمخيمات والجمعيات، 
                                             تواصل المكتبة المتجولة نشر الثقافة في كل لبنان.
                                         </p>
-                                    </article>
+                                    </article> */}
                                 </>
                             )}
                         </div>

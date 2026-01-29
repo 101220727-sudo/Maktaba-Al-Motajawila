@@ -712,6 +712,7 @@ export default function Register() {
                                     value={data.email}
                                     placeholder="example@domain.com"
                                     autoComplete="username"
+                                    pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
                                     onChange={(e) => setData('email', e.target.value)}
                                     required
                                 />
@@ -729,6 +730,8 @@ export default function Register() {
                                     value={data.phone}
                                     placeholder="03 123 456"
                                     autoComplete="tel"
+                                    maxLength={8}
+                                    pattern="[0-9]{8}"
                                     onChange={(e) => setData('phone', e.target.value)}
                                     required
                                 />

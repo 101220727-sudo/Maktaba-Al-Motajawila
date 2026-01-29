@@ -814,15 +814,19 @@ export default function NewsPage({ auth }) {
                             )}
                             
                             <Link href={route('news')} className="active">الأخبار</Link>
+                            <Link href={route('login')}>تسجيل الدخول</Link>
+                            <Link href={route('register')}>إنشاء حساب</Link> 
 
                             {/* Add News button - only for admin_news */}
                             {isAdminNews && (
                                 <Link href={route('news.add')} className="add-news-btn"> إضافة خبر </Link>
-                            )}
+                            )
+                            
+                            }
 
-                               <Link href={route('logout')} method="post" as="button" >
+                               {/* <Link href={route('logout')} method="post" as="button" >
                                                 تسجيل الخروج
-                                            </Link>
+                                            </Link> */}
                             
                            {isRegisteredUser && (
                                                 <Link href={route('profile.edit')} >

@@ -11,45 +11,80 @@ export default function ForgotPassword({ status }) {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('password.email'));
     };
 
     return (
         <GuestLayout>
-            <Head title="Forgot Password" />
+            <Head title="نسيت كلمة المرور" />
 
-            <div className="mb-4 text-sm text-gray-600">
-                Forgot your password? No problem. Just let us know your email
-                address and we will email you a password reset link that will
-                allow you to choose a new one.
-            </div>
+            <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
 
-            {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    {status}
+                {/* Logo / Icon */}
+                <div className="flex justify-center mb-6">
+                    <div className="h-14 w-14 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-2xl">
+                        🔐
+                    </div>
                 </div>
-            )}
 
-            <form onSubmit={submit}>
-                <TextInput
-                    id="email"
-                    type="email"
-                    name="email"
-                    value={data.email}
-                    className="mt-1 block w-full"
-                    isFocused={true}
-                    onChange={(e) => setData('email', e.target.value)}
-                />
+                {/* Title */}
+                <h1 className="text-2xl font-extrabold text-gray-800 text-center mb-2">
+                    نسيت كلمة المرور؟
+                </h1>
 
-                <InputError message={errors.email} className="mt-2" />
+                <p className="text-sm text-gray-500 text-center mb-6">
+                    أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور
+                </p>
 
-                <div className="mt-4 flex items-center justify-end">
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Email Password Reset Link
+                {/* Status */}
+                {status && (
+                    <div className="mb-4 text-sm font-medium text-green-600 text-center">
+                        {status}
+                    </div>
+                )}
+
+                {/* Form */}
+                <form onSubmit={submit} className="space-y-5">
+
+                    <div>
+                        <label
+                            htmlFor="email"
+                            className="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            البريد الإلكتروني
+                        </label>
+
+                        <TextInput
+                            id="email"
+                            type="email"
+                            name="email"
+                            value={data.email}
+                            className="block w-full"
+                            isFocused={true}
+                            onChange={(e) => setData('email', e.target.value)}
+                        />
+
+                        <InputError message={errors.email} className="mt-2" />
+                    </div>
+
+                    <PrimaryButton
+                        className="w-full justify-center py-3 text-base"
+                        disabled={processing}
+                    >
+                        إرسال رابط إعادة التعيين
                     </PrimaryButton>
+                </form>
+
+                {/* Back to login */}
+                <div className="mt-6 text-center">
+                    <a
+                        href={route('login')}
+                        className="text-sm text-indigo-600 hover:underline"
+                    >
+                        العودة إلى تسجيل الدخول
+                    </a>
                 </div>
-            </form>
+            </div>
         </GuestLayout>
     );
 }
