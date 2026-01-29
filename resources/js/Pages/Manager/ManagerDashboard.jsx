@@ -53,7 +53,7 @@ export default function ManagerDashboard({ admins, roles }) {
 
   return (
     <>
-      <Head title="لوحة إدارة المدير" />
+      <Head title="صفحة المدير" />
       
       <style>{`
         :root {
@@ -511,7 +511,7 @@ export default function ManagerDashboard({ admins, roles }) {
                                             </Link>  
 
                                             
-          <h1 className="page-title">لوحة إدارة المدير</h1>
+          <h1 className="page-title">لوح التحكم</h1>
 
           {/* Add New Admin Form */}
           <form onSubmit={handleAddAdmin} className="add-admin-form">
@@ -576,7 +576,6 @@ export default function ManagerDashboard({ admins, roles }) {
             <table className="admins-table">
               <thead>
                 <tr>
-                  <th>#</th>
                   <th>الاسم</th>
                   <th>البريد الإلكتروني</th>
                   <th>الدور</th>
@@ -586,7 +585,6 @@ export default function ManagerDashboard({ admins, roles }) {
               <tbody>
                 {admins.map(admin => (
                   <tr key={admin.id}>
-                    <td>{admin.id}</td>
                     <td>{admin.name}</td>
                     <td>{admin.email}</td>
                     <td>
@@ -602,12 +600,12 @@ export default function ManagerDashboard({ admins, roles }) {
                         >
                           تغيير كلمة المرور
                         </button>
-                        <button
+                        {/* <button
                           onClick={() => handlePause(admin.id)}
                           className="btn-small btn-pause"
                         >
                           إيقاف
-                        </button>
+                        </button> */}
                         <Link
                           href={`/manager-dashboard/delete/${admin.id}`}
                           method="delete"
@@ -617,7 +615,7 @@ export default function ManagerDashboard({ admins, roles }) {
                             if (!confirm('هل تريد حذف هذا المسؤول؟')) e.preventDefault();
                           }}
                         >
-                          حذف
+                          إلغاء هذا المسؤول
                         </Link>
                       </div>
                     </td>

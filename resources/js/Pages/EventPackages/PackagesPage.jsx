@@ -938,8 +938,7 @@ export default function PackagesPage({ packages, auth }) {
     // as="button" 
     // className="dropdown-item"
 >
-    تأكيد الباقات
-</Link>
+الطلبات</Link>
 
 
 <Link 
@@ -1042,8 +1041,8 @@ export default function PackagesPage({ packages, auth }) {
                                         <p className="package-description">{pkg.description || 'لا يوجد وصف متاح.'}</p>
 
                                         <ul className="package-details">
-                                            <li><strong>السعر:</strong> {pkg.total_price} د.ل</li>
-                                            <li><strong>وقت الفعالية:</strong> {pkg.event_time}</li>
+                                            <li><strong>السعر:</strong> {pkg.total_price} دولار</li>
+                                            <li><strong>وقت الفعالية:</strong> {pkg.event_time} دقيقة </li>
                                             <li>
                                                 <strong>الأنشطة:</strong>{' '}
                                                 {pkg.activities && pkg.activities.length > 0

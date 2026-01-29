@@ -770,6 +770,7 @@ const formatDateTime = (dateString) => {
                                             onChange={handleChange}
                                             value={form.nb_of_visitors}
                                             min="2"
+                                            max="50"
                                             required 
                                         />
                                     </div>
@@ -803,12 +804,12 @@ const formatDateTime = (dateString) => {
                                     </div>
 
                                     <div className="form-group">
-                                        <label htmlFor="location">الموقع</label>
+                                        <label htmlFor="location">المنطقة</label>
                                         <input 
                                             type="text" 
                                             id="location"
                                             name="location" 
-                                            placeholder="الموقع..."
+                                            placeholder="اسم المنطقة..."
                                             onChange={handleChange}
                                             value={form.location}
                                             required 
@@ -878,9 +879,9 @@ const formatDateTime = (dateString) => {
                                                             <div className="package-card-content">
                                                                 <h3 className="package-title">{pkg.package_title}</h3>
                                                                 <p className="package-description">{pkg.description || 'لا يوجد وصف متاح.'}</p>
-                                                                <p><strong>وقت الفعالية:</strong> {pkg.event_time}</p>
+                                                                <p><strong>وقت الفعالية:</strong> {pkg.event_time} دقيقة </p>
                                                                 <p><strong>الأنشطة:</strong> {pkg.activities?.join(', ') || 'غير محدد'}</p>
-                                                                <p className="package-price">السعر: {pkg.total_price} د.ل</p>
+                                                                <p className="package-price">السعر: {pkg.total_price} دولار</p>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -951,7 +952,7 @@ const formatDateTime = (dateString) => {
                                     <div className="confirmation-item">
                                         <span className="confirmation-label">السعر الإجمالي:</span>
                                         <span className="confirmation-value" style={{color: 'var(--color-teal)', fontWeight: '700'}}>
-                                            {selectedPackage?.total_price} د.ل
+                                            {selectedPackage?.total_price} دولار
                                         </span>
                                     </div>
 

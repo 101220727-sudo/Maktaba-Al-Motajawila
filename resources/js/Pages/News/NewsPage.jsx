@@ -274,12 +274,10 @@ export default function NewsPage({ auth }) {
                     gap: 0.5rem;
                     padding: 0.6rem 1.3rem;
                     border-radius: 50px;
-                    background: linear-gradient(135deg, var(--color-yellow) 0%, #F2B94C 100%);
                     color: var(--color-primary);
                     font-size: 1rem;
                     font-weight: 700;
                     text-decoration: none;
-                    box-shadow: 0 4px 15px rgba(242, 201, 76, 0.3);
                     transition: var(--transition);
                     position: relative;
                     overflow: hidden;
@@ -292,7 +290,6 @@ export default function NewsPage({ auth }) {
 
                 .add-news-btn:hover {
                     transform: translateY(-3px);
-                    box-shadow: 0 8px 25px rgba(242, 201, 76, 0.4);
                 }
 
                 .user-menu {
@@ -814,8 +811,8 @@ export default function NewsPage({ auth }) {
                             )}
                             
                             <Link href={route('news')} className="active">الأخبار</Link>
-                            <Link href={route('login')}>تسجيل الدخول</Link>
-                            <Link href={route('register')}>إنشاء حساب</Link> 
+                            {/* <Link href={route('login')}>تسجيل الدخول</Link>
+                            <Link href={route('register')}>إنشاء حساب</Link>  */}
 
                             {/* Add News button - only for admin_news */}
                             {isAdminNews && (
@@ -828,12 +825,12 @@ export default function NewsPage({ auth }) {
                                                 تسجيل الخروج
                                             </Link> */}
                             
-                           {isRegisteredUser && (
+                           {/* {isRegisteredUser && (
                                                 <Link href={route('profile.edit')} >
                                                     الملف الشخصي
                                                 </Link>
-                                            )}
-{/* 
+                                            )} */}
+
                             {user ? (
                                 <div className="user-menu">
                                     <button 
@@ -861,10 +858,10 @@ export default function NewsPage({ auth }) {
                                 </div>
                             ) : (
                                 <>
-                                    <Link href={route('register')}>تسجيل</Link>
+                                    <Link href={route('register')}>إنشاء حساب</Link>
                                     <Link href={route('login')}>تسجيل الدخول</Link>
                                 </>
-                            )} */}
+                            )} 
                         </nav>
                     </div>
                 </header>

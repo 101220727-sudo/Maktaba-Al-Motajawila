@@ -546,7 +546,7 @@ export default function AddPackagePage({ activities, auth }) {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="event_time">وقت الفعالية دقيقة</label>
+                                <label htmlFor="event_time">وقت الفعالية (دقيقة)</label>
                                 <input
                                     id="event_time"
                                     type="duration"

@@ -28,5 +28,13 @@ return array (
       'max_visitors' => '30',
       'suitable_gender' => 'female',
     ),
+    4 => 
+    array (
+      'min_age' => '8',
+      'max_age' => '12',
+      'min_visitors' => '2',
+      'max_visitors' => '23',
+      'suitable_gender' => 'mixed',
+    ),
   ),
 );

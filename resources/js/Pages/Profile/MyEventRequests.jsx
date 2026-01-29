@@ -6,7 +6,7 @@ export default function MyEventRequests({ auth, eventRequests = [] }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">طلبات الفعاليات الخاصة بي</h2>}
+            // header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">طلبات الفعاليات الخاصة بي</h2>}
         >
             <Head title="طلبات الفعاليات" />
 
