@@ -88,17 +88,16 @@ def load_documents_from_folder():
     return documents
 
 # Custom prompt template
-custom_prompt = PromptTemplate(
+QA_PROMPT = PromptTemplate(
     input_variables=["context", "question"],
     template="""
-You are a helpful assistant.
+You are an assistant for Mahdi Mobile Library.
 
-RULES:
-- If the user's question is in Arabic, answer in Arabic.
-- If the context is in English, translate and explain it in Arabic.
-- Always answer using the given context.
-- If the answer exists in the context, NEVER say you cannot answer.
-- Be clear and concise.
+Rules:
+- Answer ONLY in English.
+- Use ONLY the provided context.
+- If the answer is not found in the context, say: "I don't know based on the provided documents."
+- Do NOT invent information.
 
 Context:
 {context}
@@ -109,6 +108,7 @@ Question:
 Answer:
 """
 )
+
 
 def initialize_rag():
     """Initialize RAG system with vector store"""
@@ -147,9 +147,10 @@ def initialize_rag():
     retriever=vector_store.as_retriever(search_kwargs={"k": 3}),
     return_source_documents=True,
     chain_type_kwargs={
-        "prompt": custom_prompt
+        "prompt": QA_PROMPT
     }
 )
+
     
     print("✅ RAG system initialized!")
     return True

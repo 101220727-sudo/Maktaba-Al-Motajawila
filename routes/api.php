@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\EventRequestController;
 use App\Http\Controllers\Api\EventPackageController;
 
 use App\Models\UpcomingEvent;
+use App\Http\Controllers\Api\RagChatController;
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -42,3 +43,6 @@ Route::get('/event-packages/{id}', [EventPackageController::class, 'show'])->nam
 Route::get('/events', function() {
     return UpcomingEvent::orderBy('created_at', 'desc')->get();
 });
+
+Route::post('/rag/chat', [RagChatController::class, 'chat']);
+

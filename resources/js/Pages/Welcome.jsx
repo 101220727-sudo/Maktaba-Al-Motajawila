@@ -1037,7 +1037,14 @@ useEffect(() => {
                         <nav className="main-nav">
                             <Link href="/" className="active">الصفحة الرئيسية</Link>
                             <Link href={route('news')}>الأخبار</Link>
-                            
+                            {(!isAdminEvents || !isAdminNews || !isRegisteredUser) && (
+                    <Link
+                        href={route('ai.chat')}                    >
+                        🤖 المساعد الذكي
+                    </Link>
+                )}
+                
+
                             {/* Event Packages - for registered_user or admin_events */}
                             {(isRegisteredUser || isAdminEvents) && (
                                 <Link href={route('event.packages')}>الفعاليات</Link>
@@ -1070,6 +1077,7 @@ useEffect(() => {
                                             </Link>
                                         </div>
                                     )}
+                                    
                                 </div>
                             ) : (
                                 <>

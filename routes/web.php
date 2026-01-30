@@ -16,6 +16,14 @@ use App\Models\News;
 
 use Illuminate\Support\Facades\Auth;
 
+Route::get('/chat', function () {
+    return Inertia::render('Chat');
+});
+Route::get('/dashboard/ai-chat', function () {
+    return inertia('Chat');
+})->name('ai.chat');
+
+
 Route::get('/user-types', function () {
     return TypesOfUser::whereNotIn('name', ['Admin'])->get(['id','name']);
 });

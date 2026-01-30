@@ -1,0 +1,29 @@
+Event Package Information:
+
+1. Kids Birthday Party Package
+Price: $500
+Activities: Games, Face Painting, Magic Show, Balloon Art
+Age Range: 5-12 years
+Duration: 3 hours
+
+2. Adult Celebration Package
+Price: $1000
+Activities: Live Music, Professional Catering, Photography, Dance Floor
+Capacity: 50-100 guests
+Duration: 5 hours
+
+3. Corporate Event Package
+Price: $2000
+Activities: Meeting Room Setup, Audio/Visual Equipment, Catering, Team Building Activities
+Capacity: 20-50 guests
+Duration: Full day
+
+FAQ:
+Q: How do I book an event?
+A: You can book by selecting a package from our website and filling out the event request form.
+
+Q: Can I customize a package?
+A: Yes! Contact our admin_events team to customize your package according to your needs.
+
+Q: What is the cancellation policy?
+A: Cancellations made 7 days before the event receive a full refund.
