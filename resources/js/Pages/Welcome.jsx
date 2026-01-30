@@ -9,10 +9,29 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
     const user = auth?.user;
     const role = user?.role?.name;
 
+
+
     // Role checks
     const isRegisteredUser = role === 'registered_user';
     const isAdminNews = role === 'admin_news';
     const isAdminEvents = role === 'admin_events';
+
+
+
+
+    const [events, setEvents] = useState([]);
+
+useEffect(() => {
+    axios.get('http://127.0.0.1:8000/api/events')
+        .then(res => {
+            const lastThree = res.data.slice(0, 3); // take first 3 from returned array
+            setEvents(lastThree);
+        })
+        .catch(err => console.error(err));
+}, []);
+
+
+
 
     // Fetch latest 2 news items
     useEffect(() => {
@@ -1136,7 +1155,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 </section>
 
                 {/* Upcoming Events Section */}
-                <section className="section section-events">
+                {/* <section className="section section-events">
                     <div className="container">
                         <h2 className="section-title">الأنشطة القادمة</h2>
                         <p className="section-intro">
@@ -1160,7 +1179,44 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             </article>
                         </div>
                     </div>
-                </section>
+                </section> */}
+
+
+                {/* Upcoming Events Section */}
+<section className="section section-events">
+    <div className="container">
+        <h2 className="section-title">الأنشطة القادمة</h2>
+        <p className="section-intro">
+            يمكن للجميع الاطلاع على مواعيد الزيارات القادمة للمكتبة المتجولة 
+            والانضمام للحضور في المنطقة الأقرب إليهم.
+        </p>
+
+        <div className="grid grid-3">
+            {events && events.length > 0 ? (
+                events.map(event => (
+                    <article key={event.id} className="card event-card">
+                        <h3>{event.title}</h3>
+                        <p className="event-meta">{event.description1}</p>
+
+                        {event.description2 && (
+                            <details className="event-details">
+                                <summary>عرض التفاصيل</summary>
+                                <ul>
+                                    {event.description2.split('\n').map((line, index) => (
+                                        <li key={index}>{line}</li>
+                                    ))}
+                                </ul>
+                            </details>
+                        )}
+                    </article>
+                ))
+            ) : (
+                <p>لا توجد فعاليات قادمة حالياً</p>
+            )}
+        </div>
+    </div>
+</section>
+
 
                 {/* News Preview */}
                 <section className="section section-alt">

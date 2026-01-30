@@ -18,21 +18,21 @@ export default function Login({ status, canResetPassword }) {
 
         post(route('login'), {
             onFinish: () => reset('password'),
-            onSuccess: (response) => {
-                // Check if the logged-in user is admin_news
-                const userRole = response.props?.auth?.user?.role?.name;
+            // onSuccess: (response) => {
+            //     // Check if the logged-in user is admin_news
+            //     const userRole = response.props?.auth?.user?.role?.name;
                 
-                if (userRole === 'admin_news') {
-                    window.location.href = '/news';
-                } else if (userRole === 'manager') {
-                    window.location.href = '/manager-dashboard';
-                } else if (userRole === 'admin_events') {
-                    window.location.href = '/event-packages';
-                }
-                else {
-                    window.location.href = '/';
-                }
-            }
+            //     if (userRole === 'admin_news') {
+            //         window.location.href = '/news';
+            //     } else if (userRole === 'manager') {
+            //         window.location.href = '/manager-dashboard';
+            //     } else if (userRole === 'admin_events') {
+            //         window.location.href = '/event-packages';
+            //     }
+            //     else {
+            //         window.location.href = '/';
+            //     }
+            // }
         });
     };
 

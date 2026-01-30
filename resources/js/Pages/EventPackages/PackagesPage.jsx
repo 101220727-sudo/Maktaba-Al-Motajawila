@@ -940,6 +940,10 @@ export default function PackagesPage({ packages, auth }) {
 >
 الطلبات</Link>
 
+<Link href={route('upcoming-events.create')}>
+    إضافة فعالية قادمة
+</Link>
+
 
 <Link 
     href={route('logout')} 
