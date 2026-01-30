@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\EventRequestController;
 use App\Http\Controllers\Api\EventPackageController;
 
+use App\Models\UpcomingEvent;
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/event-requests', [EventRequestController::class, 'store']);
@@ -35,3 +37,8 @@ Route::delete('/news/{id}', [NewsController::class, 'destroy']);
 
 Route::get('/event-packages', [EventPackageController::class, 'index'])->name('event.packages.index');
 Route::get('/event-packages/{id}', [EventPackageController::class, 'show'])->name('event.packages.show');
+
+
+Route::get('/events', function() {
+    return UpcomingEvent::orderBy('created_at', 'desc')->get();
+});

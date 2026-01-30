@@ -83,8 +83,9 @@ $user = User::create([
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // return redirect(route('dashboard', absolute: false));
            // return redirect(route('dashboard'));
+           return redirect()->intended('/');
 
     }
 }

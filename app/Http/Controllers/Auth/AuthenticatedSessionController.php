@@ -29,11 +29,28 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+     //   $request->authenticate();
 
-        $request->session()->regenerate();
+    //    $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+     //   return redirect()->intended(route('dashboard', absolute: false));
+
+
+
+            $request->authenticate();
+    $request->session()->regenerate();
+
+    $user = auth()->user();
+
+    return match ($user->role->name) {
+        'admin_news'   => redirect('/news'),
+        'manager'      => redirect('/manager-dashboard'),
+        'admin_events' => redirect('/event-packages'),
+        default        => redirect('/'),
+    };
+
+
+
     }
 
     /**

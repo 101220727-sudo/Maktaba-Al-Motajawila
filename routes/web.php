@@ -9,6 +9,7 @@ use App\Models\TypesOfUser;
 use App\Http\Controllers\Api\EventRequestController;
 use App\Http\Controllers\Api\EventPackageController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\Api\UpcomingEventsController;
 
 use Illuminate\Http\Request;
 use App\Models\News;
@@ -32,6 +33,18 @@ Route::get('/news/add', function () {
 
 
 
+
+// List page
+Route::get('/upcoming-events', [UpcomingEventsController::class, 'index'])
+    ->name('upcoming-events.index');
+
+// Add form page
+Route::get('/upcoming-events/create', [UpcomingEventsController::class, 'create'])
+    ->name('upcoming-events.create');
+
+// Form submit
+Route::post('/upcoming-events', [UpcomingEventsController::class, 'store'])
+    ->name('upcoming-events.store');
 
 // Route::get('/packages', function () {
 //     $packages = EventsPackage::all(); // fetch all packages
